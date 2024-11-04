@@ -15,3 +15,26 @@
     - Infinite Scroll or Pagination
     - Push Notifications
     - API/Database depending on my framework
+
+
+
+| Rubric | Nov 6 | Nov 9 | Nov 13 | Nov 16 | Nov 20 | Nov 23 | Nov 26 | Dec 4 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Project scope is 2-3 times larger than Inventory Management (per group member) | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✔️ |
+| Technology: use local storage | ❌ | ❌ | ❌ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ |
+| Technology: Client side state stores (e.g. tanstack query or context) | ❌ | ❌ | ❌ | ❌ | ✔️ | ✔️ | ✔️ | ✔️ |
+| Technology: Toasts / global notifications or alerts | ❌ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ |
+| Technology: Error handling (both on api requests and render errors) | ❌ | ❌ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ |
+| Technology: Network Calls that read and write data | ❌ | ❌ | ❌ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ |
+| Technology: Developer type helping (typescript) | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ |
+| Technology: 10+ pages or views | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✔️ |
+| Technology: CI/CD pipeline | ❌ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ |
+| Technology: tests run in pipeline, pipeline aborts if they fail | ❌ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ |
+| Technology: linting in pipeline | ❌ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ |
+| Technology: 3+ generic form input components | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✔️ |
+| Technology: 4+ generic layout components | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✔️ | ✔️ |
+| Technology: authentication and user account support | ❌ | ❌ | ❌ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ |
+| Technology: authorized pages and public pages | ❌ | ❌ | ❌ | ❌ | ✔️ | ✔️ | ✔️ | ✔️ |
+| Experience: all experiences mobile friendly | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ |
+| Experience: 3 instances where elements re-order themselves on smaller screens | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ |
+| Professional, organized and smooth experience | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✔️ |
