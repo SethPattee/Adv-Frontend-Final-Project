@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   namespace: sethfinal
   name: advfrontend-deployment
-  labels:
+  labels: 
     app: advfrontend
 spec:
   replicas: 1  # Set to 1 or uncomment if needed
@@ -19,7 +19,7 @@ spec:
       - name: advfrontend
         image: varxii/advfrontend:${RUN_ID}
         ports:
-        - containerPort: 80  # source of truth no choose
+        - containerPort: 3000  # source of truth no choose
         env:
         - name: NODE_ENV
           value: development

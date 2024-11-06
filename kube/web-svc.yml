@@ -8,5 +8,5 @@ spec:
   selector:
     app: advfrontend  # Matches the app label from the Deployment
   ports:
-    - port: 80          # Port exposed by the service
-      targetPort: 80      # The container port (should match the container's port in the deployment file)
+    - port: 3000        # Port exposed by the service
+      targetPort: 3000      # The container port (should match the container's port in the deployment file)
