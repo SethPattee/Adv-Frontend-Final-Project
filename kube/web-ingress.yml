@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  namespace: sethfinal
+  name: advfrontend-ingress
+  # annotations:
+    # cert-manager.io/cluster-issuer: cert-manager-webhook-duckdns-seth-production
+spec:
+  # tls:
+  # - hosts:
+  #   - fngauto.duckdns.org
+  #   # secretName: seth2-kube-tls-production
+  ingressClassName: nginx
+  rules:
+  - host: sethstar.duckdns.org
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: advfrontend-service
+            port:
+              number: 80

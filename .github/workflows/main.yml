@@ -1,0 +1,59 @@
+name: Deploy Vite React App and C# API
+on:
+  push:
+    branches:
+      - main
+jobs:
+  deploy:
+    runs-on: self-hosted
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: "Log into Docker"
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: "Build and Push Docker images"
+        run: |
+          docker build -t varxii/advfrontend:${{github.run_id}} -t varxii/advfrontend:latest .
+          
+          docker push varxii/advfrontend --all-tags
+      - name: "Kubernetes Apply Configurations"
+        run: |
+          echo "Deploying Vite React App and C# API"
+          export RUN_ID=${{github.run_id}}
+          for file in ./kube/*; do
+            echo "applying $file"
+            cat $file | envsubst | kubectl apply -f -
+          done
+
+      # - name: "Linting + Build Warnings"
+      #   run: |
+      #     echo "Running Lint Checks"
+      #     npm run lint
+
+      # - name: "Testing"
+      #   run: |
+      #     echo "Running Tests"
+      #     npm run test
+
+      # - name: Notify about failure
+      #   if: ${{ failure() }}
+      #   run: |
+      #      echo "Sending failure notification"
+      #      cat << EOF > message.json
+      #      {"@type":"MessageCard","@context":"https://schema.org/extensions","summary":"Pipeline failed!","themeColor":"ff0000","title":"$GITHUB_REPOSITORY pipeline failed 💢!","sections":[{"facts":[{"name":"Repository:","value":"$GITHUB_REPOSITORY"},{"name":"Branch:","value":"$GITHUB_REF_NAME"},{"name":"Commit:","value":"$GITHUB_SHA"}]}],"potentialAction":[{"@type":"OpenUri","name":"View on GitHub","targets":[{"os":"default","uri":"$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"}]}]}
+      #      EOF
+      #      curl -X POST ${{ secrets.TEAMS_WEBHOOK }} --header 'Content-Type: application/json' -d @message.json
+
+      # - name: Notify about Success!
+      #   if: ${{ success() }}
+      #   run: |
+      #      echo "Sending success notification"
+      #      cat << EOF > message.json
+      #      {"@type":"MessageCard","@context":"https://schema.org/extensions","summary":"Pipeline Success!","themeColor":"aaff00","title":"$GITHUB_REPOSITORY Success! ✔️","sections":[{"facts":[{"name":"Repository:","value":"$GITHUB_REPOSITORY"},{"name":"Branch:","value":"$GITHUB_REF_NAME"},{"name":"Commit:","value":"$GITHUB_SHA"}]}],"potentialAction":[{"@type":"OpenUri","name":"View on GitHub","targets":[{"os":"default","uri":"$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"}]}]}
+      #      EOF
+      #      curl -X POST ${{ secrets.TEAMS_WEBHOOK }} --header 'Content-Type: application/json' -d @message.json

@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: sethfinal
+  name: advfrontend-deployment
+  labels:
+    app: advfrontend
+spec:
+  replicas: 1  # Set to 1 or uncomment if needed
+  selector:
+    matchLabels:
+      app: advfrontend
+  template:
+    metadata:
+      labels:
+        app: advfrontend
+    spec:
+      containers:
+      - name: advfrontend
+        image: varxii/advfrontend:${RUN_ID}
+        ports:
+        - containerPort: 80  # source of truth no choose
+        env:
+        - name: NODE_ENV
+          value: development
+        # livenessProbe:
+        #   httpGet:
+        #     path: /
+        #     port: 2338
+        #   initialDelaySeconds: 5
+        #   periodSeconds: 10
+        # readinessProbe:
+        #   httpGet:
+        #     path: /
+        #     port: 2338
+        #   initialDelaySeconds: 5
+        #   periodSeconds: 10
