@@ -28,13 +28,14 @@
 | Technology: Network Calls that read and write data | ❌ | ❌ | ❌ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ |
 | Technology: Developer type helping (typescript) | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ |
 | Technology: 10+ pages or views | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✔️ |
-| Technology: CI/CD pipeline | ❌ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ |
+| Technology: CI/CD pipeline | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ |
 | Technology: tests run in pipeline, pipeline aborts if they fail | ❌ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ |
 | Technology: linting in pipeline | ❌ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ |
 | Technology: 3+ generic form input components | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✔️ |
 | Technology: 4+ generic layout components | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✔️ | ✔️ |
-| Technology: authentication and user account support | ❌ | ❌ | ❌ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ |
+| Technology: authentication and user account support | ✔️  | ✔️ ✔️ | ✔️  | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ |
 | Technology: authorized pages and public pages | ❌ | ❌ | ❌ | ❌ | ✔️ | ✔️ | ✔️ | ✔️ |
 | Experience: all experiences mobile friendly | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ |
-| Experience: 3 instances where elements re-order themselves on smaller screens | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ |
+| Experience: 3 instances where elements re-order themselves on smaller screens | ❌ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ |
 | Professional, organized and smooth experience | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✔️ |
+| Self Evaluation| I hit the things that I wanted and a bit   more. | |  |  |  |  |  |  |
