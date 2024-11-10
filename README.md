@@ -38,4 +38,4 @@
 | Experience: all experiences mobile friendly | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ |
 | Experience: 3 instances where elements re-order themselves on smaller screens | ❌ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ |
 | Professional, organized and smooth experience | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✔️ |
-| Self Evaluation| I hit the things that I wanted and a bit   more. | |  |  |  |  |  |  |
+| Self Evaluation| I hit the things that I wanted and a bit   more. | I worked on the api and got the auth working. All goals have been completed. |  |  |  |  |  |  |
