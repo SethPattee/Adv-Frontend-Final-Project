@@ -25,6 +25,7 @@ jobs:
       - name: "Kubernetes Apply Configurations"
         run: |
           echo "Deploying Vite React App and C# API"
+          cd client
           export RUN_ID=${{github.run_id}}
           for file in ./kube/*; do
             echo "applying $file"
