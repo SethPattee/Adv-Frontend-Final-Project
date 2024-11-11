@@ -54,10 +54,3 @@ app.MapGet("/authonly", (ClaimsPrincipal user) =>
 }).RequireAuthorization();
 
 app.Run();
-
-
-
-//   <ItemGroup>
-//     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.10" />
-//     <PackageReference Include="Microsoft.IdentityModel" Version="7.0.0" />
-//   </ItemGroup>

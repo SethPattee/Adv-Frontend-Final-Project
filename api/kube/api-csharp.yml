@@ -1,0 +1,93 @@
+# Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: sethfinal
+  name: advapi-deployment
+  labels:
+    app: advapi
+spec:
+  selector:
+    matchLabels:
+      app: advapi
+  template:
+    metadata:
+      labels:
+        app: advapi
+    spec:
+      containers:
+      - name: advapi
+        image: varxii/advapi:${RUN_ID}
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+        - name: data
+          mountPath: /data # Make sure the application reads/writes to this path
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: advapi-pvc # Updated to match PVC name
+
+---
+# Service
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: sethfinal
+  name: advapi-service
+spec:
+  type: ClusterIP
+  selector:
+    app: advapi
+  ports:
+    - port: 8080
+      targetPort: 8080
+
+---
+# Persistent Volume
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: advapi-pv
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: /data/advapi # Path on the host machine
+
+---
+# Persistent Volume Claim
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: advapi-pvc # Match this name with Deployment
+  namespace: sethfinal
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+
+---
+# Ingress
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  namespace: sethfinal
+  name: advapi-ingress
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: sethapi.duckdns.org
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: advapi-service
+            port:
+              number: 8080
