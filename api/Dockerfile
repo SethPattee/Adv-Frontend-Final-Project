@@ -4,7 +4,7 @@ WORKDIR /app
 COPY api/*.csproj ./
 RUN dotnet restore
 
-COPY api/ ./
+COPY . .
 RUN dotnet publish -c Release -o out
 EXPOSE 8080
 
