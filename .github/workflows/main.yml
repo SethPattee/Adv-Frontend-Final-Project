@@ -18,6 +18,7 @@ jobs:
 
       - name: "Build and Push Docker images"
         run: |
+          cd client
           docker build -t varxii/advfrontend:${{github.run_id}} -t varxii/advfrontend:latest .
           
           docker push varxii/advfrontend --all-tags
