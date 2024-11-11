@@ -1,4 +1,4 @@
-
+using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,7 +16,10 @@ builder.Services.AddAuthentication("Bearer")
         options.Authority = "https://auth.snowse.duckdns.org/realms/advanced-frontend/";
         options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
         {
-            ValidateAudience = false 
+            ValidateIssuer = true,
+            ValidIssuer = "https://auth.snowse.duckdns.org/realms/advanced-frontend/",
+            ValidateAudience = true,
+            ValidAudience = "seth-authdemo",
         };
     });
 
@@ -26,20 +29,32 @@ var app = builder.Build();
 
 app.UseCors();
 app.UseAuthentication();
-app.UseAuthorization(); 
+app.UseAuthorization();
+
 app.MapGet("/public", () =>
 {
     Console.WriteLine("Used Public");
     return "Hello World!";
 }).AllowAnonymous();
 
-app.MapGet("/authonly", () =>
+app.MapGet("/authonly", (ClaimsPrincipal user) =>
 {
-    Console.WriteLine("Used AuthOnly");
+    var email = user.FindFirst(ClaimTypes.Email)?.Value;
+
+    if (email != null)
+    {
+        Console.WriteLine($"Authenticated user's email: {email}");
+    }
+    else
+    {
+        Console.WriteLine("Email claim not found for authenticated user.");
+    }
+
     return "Hello Authenticated World!";
 }).RequireAuthorization();
 
 app.Run();
+
 
 
 //   <ItemGroup>

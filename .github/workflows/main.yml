@@ -16,15 +16,16 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: "Build and Push Docker images"
+      - name: "Build and Push Docker RSBuild App image"
         run: |
           cd client
           docker build -t varxii/advfrontend:${{github.run_id}} -t varxii/advfrontend:latest .
           
           docker push varxii/advfrontend --all-tags
-      - name: "Kubernetes Apply Configurations"
+
+      - name: "Kubernetes Apply Configurations For the RSBuild App"
         run: |
-          echo "Deploying Vite React App and C# API"
+          echo "Deploying RSBuild App"
           cd client
           export RUN_ID=${{github.run_id}}
           for file in ./kube/*; do
@@ -42,20 +43,19 @@ jobs:
       #     echo "Running Tests"
       #     npm run test
 
-      # - name: Notify about failure
-      #   if: ${{ failure() }}
-      #   run: |
-      #      echo "Sending failure notification"
-      #      cat << EOF > message.json
-      #      {"@type":"MessageCard","@context":"https://schema.org/extensions","summary":"Pipeline failed!","themeColor":"ff0000","title":"$GITHUB_REPOSITORY pipeline failed 💢!","sections":[{"facts":[{"name":"Repository:","value":"$GITHUB_REPOSITORY"},{"name":"Branch:","value":"$GITHUB_REF_NAME"},{"name":"Commit:","value":"$GITHUB_SHA"}]}],"potentialAction":[{"@type":"OpenUri","name":"View on GitHub","targets":[{"os":"default","uri":"$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"}]}]}
-      #      EOF
-      #      curl -X POST ${{ secrets.TEAMS_WEBHOOK }} --header 'Content-Type: application/json' -d @message.json
+      - name: "Deploy C# API"
+        run: |
+          echo "Deploying C# API"
+          cd api
+          docker build -t varxii/advapi:${{github.run_id}} -t varxii/advapi:latest .
+          docker push varxii/advapi --all-tags
 
-      # - name: Notify about Success!
-      #   if: ${{ success() }}
-      #   run: |
-      #      echo "Sending success notification"
-      #      cat << EOF > message.json
-      #      {"@type":"MessageCard","@context":"https://schema.org/extensions","summary":"Pipeline Success!","themeColor":"aaff00","title":"$GITHUB_REPOSITORY Success! ✔️","sections":[{"facts":[{"name":"Repository:","value":"$GITHUB_REPOSITORY"},{"name":"Branch:","value":"$GITHUB_REF_NAME"},{"name":"Commit:","value":"$GITHUB_SHA"}]}],"potentialAction":[{"@type":"OpenUri","name":"View on GitHub","targets":[{"os":"default","uri":"$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"}]}]}
-      #      EOF
-      #      curl -X POST ${{ secrets.TEAMS_WEBHOOK }} --header 'Content-Type: application/json' -d @message.json
+      - name: "Kubernetes Apply Configurations For the C# API"
+        run: |
+          echo "Deploying C# API"
+          cd api
+          export RUN_ID=${{github.run_id}}
+          for file in ./kube/*; do
+            echo "applying $file"
+            cat $file | envsubst | kubectl apply -f -
+          done
