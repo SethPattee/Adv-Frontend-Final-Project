@@ -21,7 +21,7 @@
 | Rubric | Nov 6 | Nov 9 | Nov 13 | Nov 16 | Nov 20 | Nov 23 | Nov 26 | Dec 4 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | Project scope is 2-3 times larger than Inventory Management (per group member) | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✔️ |
-| Technology: use local storage | ❌ | ❌ | ❌ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ |
+| Technology: use local storage, Window localStorage | ❌ | ❌ | ❌ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ |
 | Technology: Client side state stores (e.g. tanstack query or context) | ❌ | ❌ | ❌ | ❌ | ✔️ | ✔️ | ✔️ | ✔️ |
 | Technology: Toasts / global notifications or alerts | ❌ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ |
 | Technology: Error handling (both on api requests and render errors) | ❌ | ❌ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ | ✔️ |
