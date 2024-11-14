@@ -49,3 +49,37 @@ ScaffoldingReadMe.txt
 .dotnet/
 .nuget/
 
+# .NET Core
+bin/
+obj/
+
+# User-specific files
+.vs/
+.idea/
+.vscode/
+
+# ASP.NET Core
+appsettings.Development.json
+appsettings.json
+
+# Rider
+.idea/
+
+# Windows Installer files
+*.cab
+*.msi
+*.msm
+*.msp
+
+# Windows Installer files
+Thumbs.db
+ehthumbs.db
+
+# Log files
+*.log
+
+# Entity Framework Core migrations
+Migrations/
+
+# ASP.NET Core production settings
+wwwroot/
