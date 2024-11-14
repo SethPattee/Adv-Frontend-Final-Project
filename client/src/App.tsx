@@ -3,7 +3,6 @@ import LoginButton from './AuthLogic/LoginButton';
 
 const App = () => {
   return (
-    
     <div className="content">
       <LoginButton></LoginButton>
       <h1>Rsbuild with React</h1>
