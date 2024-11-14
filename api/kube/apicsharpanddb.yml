@@ -1,0 +1,187 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: sethfinal
+  name: advapi-deployment
+  labels:
+    app: advapi
+spec:
+  selector:
+    matchLabels:
+      app: advapi
+  template:
+    metadata:
+      labels:
+        app: advapi
+    spec:
+      containers:
+      - name: advapi
+        image: varxii/advapi:${RUN_ID}
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+        - name: data
+          mountPath: /data # Make sure the application reads/writes to this path
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: advapi-pvc # Updated to match PVC name
+
+---
+# Service
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: sethfinal
+  name: advapi-service
+spec:
+  type: ClusterIP
+  selector:
+    app: advapi
+  ports:
+    - port: 8080
+      targetPort: 8080
+
+---
+# Persistent Volume
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: advapi-pv
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: /data/advapi # Path on the host machine
+
+---
+# Persistent Volume Claim
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: advapi-pvc # Match this name with Deployment
+  namespace: sethfinal
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+
+---
+# Ingress
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  namespace: sethfinal
+  name: advapi-ingress
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: sethapi.duckdns.org
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: advapi-service
+            port:
+              number: 8080
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  namespace: sethfinal
+  name: starsdatabase-db-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi  # Adjust the storage size as needed
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: sethfinal
+  name: starsdatabase-db-deployment
+  labels:
+    app: starsdatabase-db
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: starsdatabase-db
+  template:
+    metadata:
+      labels:
+        app: starsdatabase-db
+    spec:
+      containers:
+      - name: starsdatabase-db
+        image: postgres
+        ports:
+        - containerPort: 5432
+        env:
+        - name: POSTGRES_USER
+          value: postgres
+        - name: POSTGRES_PASSWORD
+          value: postgres
+        - name: POSTGRES_DB
+          value: starsdatabase_db
+        volumeMounts:
+        - name: postgresstorage
+          mountPath: /var/lib/postgresql/data
+        - name: init-script
+          mountPath: /docker-entrypoint-initdb.d
+      volumes:
+      - name: postgresstorage
+        persistentVolumeClaim:
+          claimName: starsdatabase-db-pvc
+      - name: init-script
+        configMap:
+          name: starsdatabase-db-init
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: sethfinal
+  name: starsdatabase-db-service
+spec:
+  type: ClusterIP
+  selector:
+    app: starsdatabase-db
+  ports:
+    - port: 5432
+      targetPort: 5432
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: sethfinal
+  name: starsdatabase-db-init
+data:
+  init.sql: |
+    CREATE TABLE profiles (
+      id SERIAL PRIMARY KEY,
+      user_id INT UNIQUE NOT NULL,           -- Unique identifier for each user
+      username VARCHAR(50) NOT NULL,
+      avatar_url TEXT,                       -- URL to the user's avatar
+      bio TEXT,                              -- Short bio of the user
+      astromoney_balance DECIMAL(10, 2),     -- Balance in "astromoney"
+      created_at TIMESTAMP DEFAULT NOW(),
+      updated_at TIMESTAMP DEFAULT NOW()
+    );
+    INSERT INTO profiles (user_id, username, avatar_url, bio, astromoney_balance)
+    VALUES
+      (1, 'spacecadet', 'https://example.com/avatar1.png', 'Exploring the cosmos', 100.00),
+      (2, 'starchaser', 'https://example.com/avatar2.png', 'Chasing stars', 250.50);
