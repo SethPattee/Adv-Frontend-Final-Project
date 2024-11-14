@@ -131,6 +131,27 @@ app.MapPut("/api/profile", async (ClaimsPrincipal user, [FromBody] ProfileUpdate
 
     return Results.Ok(profile);
 }).RequireAuthorization();
+app.MapGet("/public", () =>
+{
+    Console.WriteLine("Used Public");
+    return "Hello World!";
+}).AllowAnonymous();
+
+app.MapGet("/authonly", (ClaimsPrincipal user) =>
+{
+    var email = user.FindFirst(ClaimTypes.Email)?.Value;
+
+    if (email != null)
+    {
+        Console.WriteLine($"Authenticated user's email: {email}");
+    }
+    else
+    {
+        Console.WriteLine("Email claim not found for authenticated user.");
+    }
+
+    return "Hello Authenticated World!";
+}).RequireAuthorization();
 
 app.Run();
 
