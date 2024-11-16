@@ -8,8 +8,8 @@ import Providers from './AuthLogic/provider';
 import ErrorBoundary from './ErrorBoundary';
 import Navbar from './component/Navbar';
 import { ThemeProvider } from './context/ThemeContext';
-import CustomizeProfile from './pages/CustomizeProfile';
 import BlogPage from './pages/BlogPage';
+import CustomizeProfile from './pages/CustomizeProfile';
 
 const queryClient = new QueryClient();
 

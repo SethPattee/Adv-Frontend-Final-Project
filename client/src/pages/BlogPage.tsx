@@ -1,8 +1,9 @@
 // src/pages/BlogPage.tsx
-import React, { useState } from 'react';
-import { useSubmitBlogPost } from '../hooks/useSubmitBlogPost';
+import type React from 'react';
+import { useState } from 'react';
 import toast from 'react-hot-toast';
 import { useBlogPosts } from '../hooks/useBlogpost';
+import { useSubmitBlogPost } from '../hooks/useSubmitBlogPost';
 
 const BlogPage: React.FC = () => {
   const { data: blogPosts, isLoading, isError } = useBlogPosts();
@@ -17,16 +18,19 @@ const BlogPage: React.FC = () => {
       return;
     }
 
-    mutation.mutate({ title, content }, {
-      onSuccess: (data) => {
-        toast.success('Blog post submitted!');
-        setTitle('');
-        setContent('');
+    mutation.mutate(
+      { title, content },
+      {
+        onSuccess: (data) => {
+          toast.success('Blog post submitted!');
+          setTitle('');
+          setContent('');
+        },
+        onError: (error) => {
+          toast.error('Failed to submit blog post.');
+        },
       },
-      onError: (error) => {
-        toast.error('Failed to submit blog post.');
-      }
-    });
+    );
   };
 
   if (isLoading) return <div>Loading blog posts...</div>;
@@ -36,7 +40,7 @@ const BlogPage: React.FC = () => {
   return (
     <div className="p-6 max-w-4xl mx-auto space-y-6">
       <h1 className="text-3xl font-bold">Blog</h1>
-      
+
       <div>
         <h2 className="text-xl font-semibold">Submit a New Post</h2>
         <input
@@ -53,6 +57,7 @@ const BlogPage: React.FC = () => {
           className="block w-full p-2 border rounded-md mb-2"
         />
         <button
+          type="button"
           onClick={handleSubmit}
           className="px-4 py-2 bg-blue-500 text-white rounded-md"
         >
@@ -67,7 +72,8 @@ const BlogPage: React.FC = () => {
             <h3 className="text-lg font-bold">{post.title}</h3>
             <p>{post.content}</p>
             <p className="text-sm text-gray-500">
-              Posted by User {post.user_id} on {new Date(post.created_at).toLocaleString()}
+              Posted by User {post.user_id} on{' '}
+              {new Date(post.created_at).toLocaleString()}
             </p>
           </div>
         ))}

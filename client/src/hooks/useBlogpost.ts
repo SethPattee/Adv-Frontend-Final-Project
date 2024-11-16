@@ -12,14 +12,13 @@ type BlogPost = {
 };
 
 const fetchBlogPosts = async () => {
-    const { data } = await axiosInstance.get('/api/blog');
-    return data;
-  };
-  
+  const { data } = await axiosInstance.get('/api/blog');
+  return data;
+};
 
 export const useBlogPosts = () => {
-    return useQuery({
-      queryKey: ['blogPosts'],
-      queryFn: fetchBlogPosts,
-    });
-  };
+  return useQuery({
+    queryKey: ['blogPosts'],
+    queryFn: fetchBlogPosts,
+  });
+};

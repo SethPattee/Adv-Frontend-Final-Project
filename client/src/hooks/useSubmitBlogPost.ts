@@ -17,7 +17,9 @@ type BlogPostResponse = {
   updated_at: string;
 };
 
-const submitBlogPost = async (newPost: NewBlogPost): Promise<BlogPostResponse> => {
+const submitBlogPost = async (
+  newPost: NewBlogPost,
+): Promise<BlogPostResponse> => {
   const { data } = await axiosInstance.post('/api/blog', newPost);
   return data;
 };
