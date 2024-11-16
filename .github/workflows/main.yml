@@ -16,6 +16,12 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
+      - name: "Linting + Build Warnings"
+        run: |
+          echo "Running Lint Checks"
+          cd client 
+          npm run check
+
       - name: "Build and Push Docker RSBuild App image"
         run: |
           cd client
@@ -32,11 +38,6 @@ jobs:
             echo "applying $file"
             cat $file | envsubst | kubectl apply -f -
           done
-
-      # - name: "Linting + Build Warnings"
-      #   run: |
-      #     echo "Running Lint Checks"
-      #     npm run lint
 
       # - name: "Testing"
       #   run: |

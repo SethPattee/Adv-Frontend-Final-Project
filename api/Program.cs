@@ -153,17 +153,52 @@ app.MapGet("/authonly", (ClaimsPrincipal user) =>
     return "Hello Authenticated World!";
 }).RequireAuthorization();
 
+// GET /api/blog - List all blog posts
+app.MapGet("/api/blog", async (AppDbContext dbContext) =>
+{
+    var blogPosts = await dbContext.BlogPosts.ToListAsync();
+    return Results.Ok(blogPosts);
+});
+
+// POST /api/blog - Submit a new blog post
+app.MapPost("/api/blog", async (ClaimsPrincipal user, [FromBody] BlogPost newPost, AppDbContext dbContext) =>
+{
+    var userIdClaim = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+    if (userIdClaim == null) return Results.Unauthorized();
+
+    newPost.UserId = int.Parse(userIdClaim);
+    newPost.CreatedAt = DateTime.Now;
+    newPost.UpdatedAt = DateTime.Now;
+
+    dbContext.BlogPosts.Add(newPost);
+    await dbContext.SaveChangesAsync();
+
+    return Results.Ok(newPost);
+}).RequireAuthorization();
+
+
 app.Run();
 
 // DTO for updating profile
 public record ProfileUpdateDto(string? Bio, string? AvatarUrl);
 
 // Database context and models
+public class BlogPost
+{
+    public int Id { get; set; }
+    public int UserId { get; set; }
+    public string Title { get; set; }
+    public string Content { get; set; }
+    public DateTime CreatedAt { get; set; } = DateTime.Now;
+    public DateTime UpdatedAt { get; set; } = DateTime.Now;
+}
+
 public class AppDbContext : DbContext
 {
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
     public DbSet<Profile> Profiles { get; set; }
+    public DbSet<BlogPost> BlogPosts { get; set; }
 }
 
 public class Profile

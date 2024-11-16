@@ -1,23 +1,29 @@
-// src/hooks/useProfile.ts
 import { useQuery } from '@tanstack/react-query';
-import axios from 'axios';
+import toast from 'react-hot-toast';
+import axiosInstance from '../utils/axiosInstance';
 
 type Profile = {
-    id: number;
-    username: string;
-    avatar_url: string;
-    bio: string;
-    astromoney_balance: number;
+  id: number;
+  username: string;
+  avatar_url: string;
+  bio: string;
+  astromoney_balance: number;
 };
 
 const fetchProfile = async (): Promise<Profile> => {
-    const { data } = await axios.get('/api/profile');
-    return data;
+  const { data } = await axiosInstance.get('/api/profile');
+  return data;
 };
 
 export const useProfile = () => {
-  return useQuery({
-      queryKey: ['profile'],
-      queryFn: fetchProfile,
+  const { data, error, isLoading } = useQuery({
+    queryKey: ['profile'],
+    queryFn: fetchProfile,
   });
+
+  if (error) {
+    toast.error(`Failed to load profile: ${error.message}`);
+  }
+
+  return { data, isLoading };
 };

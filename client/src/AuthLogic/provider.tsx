@@ -1,16 +1,20 @@
-import React, { ReactNode, useEffect, useState } from "react";
-import { AuthProvider, AuthProviderProps, useAuth } from "react-oidc-context";
+import React, { type ReactNode, useEffect, useState } from 'react';
+import {
+  AuthProvider,
+  type AuthProviderProps,
+  useAuth,
+} from 'react-oidc-context';
 
 const oidcConfig: AuthProviderProps = {
-  authority: "https://auth.snowse.duckdns.org/realms/advanced-frontend/",
-  client_id: "seth-final",
-    // redirect_uri: "http://localhost:3000/", //change for kubernest 
-    redirect_uri: "https://sethstar.duckdns.org/",
-    silent_redirect_uri: "https://sethstar.duckdns.org/silent-renew.html",
+  authority: 'https://auth.snowse.duckdns.org/realms/advanced-frontend/',
+  client_id: 'seth-final',
+  // redirect_uri: "http://localhost:3000/", //change for kubernest
+  redirect_uri: 'https://sethstar.duckdns.org/',
+  silent_redirect_uri: 'https://sethstar.duckdns.org/silent-renew.html',
   // silent_redirect_uri: "http://localhost:3000/silent-renew.html",
   automaticSilentRenew: true,
   onSigninCallback: async (user) => {
-    const newURL = window.location.href.split("?")[0];
+    const newURL = window.location.href.split('?')[0];
     window.history.replaceState({}, document.title, newURL);
     document.cookie = `jwt_token=${user?.access_token}`;
   },
@@ -28,7 +32,7 @@ function SessionChecker() {
 
         if (timeRemaining < 300 && !renewalChecked) {
           auth.signinSilent().catch((error) => {
-            console.error("Silent renewal failed:", error);
+            console.error('Silent renewal failed:', error);
           });
           setRenewalChecked(true);
         }

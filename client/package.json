@@ -10,12 +10,13 @@
     "preview": "rsbuild preview"
   },
   "dependencies": {
-    "@tanstack/react-query": "^5.59.20",
+    "@tanstack/react-query": "^5.60.5",
     "@tanstack/react-query-devtools": "^5.59.20",
     "axios": "^1.7.7",
     "oidc-client-ts": "^3.1.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-hot-toast": "^2.4.1",
     "react-oidc-context": "^3.2.0",
     "react-router-dom": "^6.28.0",
     "tailwindcss": "^3.4.14"
