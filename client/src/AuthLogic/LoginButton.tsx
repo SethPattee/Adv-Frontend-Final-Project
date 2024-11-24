@@ -9,6 +9,10 @@ function LoginButton() {
     case 'signoutRedirect':
       return <div>Signing you out...</div>;
   }
+  console.log(auth);
+  if (!auth) {
+    return <div>Loading authentication...</div>;
+  }
 
   if (auth.isLoading) {
     return <div>Loading...</div>;

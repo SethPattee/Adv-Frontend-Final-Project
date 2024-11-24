@@ -1,0 +1,302 @@
+$primary: #3498db
+$bg-color: #f8f9fa
+$text-color: #333
+
+.form-control
+  border-radius: 4px
+  border: 1px solid #ced4da
+  padding: 0.75rem
+  transition: border-color 0.3s ease
+  &:focus
+    border-color: $primary
+    box-shadow: 0 0 0 0.2rem rgba($primary, 0.25)
+
+.form-label
+  font-weight: 600
+  color: $text-color
+  margin-bottom: 0.5rem
+
+.btn-primary
+  background-color: $primary
+  border-color: $primary
+  padding: 0.5rem 1rem
+  border-radius: 4px
+  transition: background-color 0.2s, border-color 0.2s
+  &:hover, &:focus
+    background-color: darken($primary, 10%)
+    border-color: darken($primary, 10%)
+
+.inventory-form
+  display: flex
+  flex-direction: column
+  gap: 1rem
+  background-color: #fff
+  border-radius: 8px
+  padding: 1.5rem
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1)
+
+  .form-control
+    margin-bottom: 1rem
+
+@media (max-width: 768px)
+  .inventory-form
+    padding: 1rem
+
+$primary: #3498db
+$info: #2980b9
+$success: #35a865
+$warning: #f39c12
+$danger: #c0392b
+$primary-light: lighten($primary, 15%)
+$primary-dark: darken($primary, 15%)
+$bg-color: #f8f9fa
+$text-color: #333
+$text-muted: #6c757d
+$theme-colors: ("primary": $primary, "info": $info, "success": $success, "warning": $warning, "danger": $danger)
+
+@import "bootstrap/scss/bootstrap"
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap')
+
+$font-family-base: "Playfair Display"
+
+body
+  background-color: $bg-color
+  color: $text-color
+  font-family: $font-family-base
+  padding: 1rem
+
+.container
+  max-width: 1200px
+  margin: 0 auto
+  padding: 2rem 1rem
+
+h1
+  color: $primary
+  text-align: center
+  margin-bottom: 2rem
+  font-size: 2.5rem
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2)
+
+h2, h3, h4, h5, h6
+  margin-bottom: 1rem
+  text-transform: uppercase
+
+.card
+  border-color: $secondary
+  transition: transform 0.3s ease, box-shadow 0.3s ease
+  margin: 0 auto 1rem auto
+  border-radius: 8px
+  overflow: hidden
+  &:hover
+    transform: translateY(-5px)
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.15)
+   
+  .card-title
+    color: $primary
+    font-size: 1.5rem
+  .card-subtitle
+    color: $info
+
+.btn
+  border-radius: 4px
+  font-weight: 600
+  transition: all 0.3s ease
+  &-primary
+    background-color: $primary
+    border-color: $primary
+    transition: background-color 0.2s, border-color 0.2s, transform 0.2s
+    &:hover, &:focus
+      background-color: darken($primary, 10%)
+      border-color: $primary-dark
+      transform: translateY(-2px)
+
+.form-control
+  border-radius: 4px
+  border-color: #ced4da
+  transition: border-color 0.3s ease
+  &:focus
+    border-color: $primary
+    box-shadow: 0 0 0 0.2rem rgba($primary, 0.25)
+
+.book-list
+  list-style-type: none
+  padding-left: 0
+  li
+    padding: 0.75rem 1rem
+    border-radius: 4px
+    transition: background-color 0.3s ease, transform 0.2s ease
+    &:hover
+      background-color: rgba($primary, 0.1)
+      transform: translateY(-2px)
+    &.selected
+      background-color: rgba($primary, 0.2)
+      font-weight: 600
+
+.book-details
+  background-color: #fff
+  border-radius: 8px
+  padding: 1.5rem
+  margin-bottom: 2rem
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1)
+  h3
+    color: $primary
+    margin-bottom: 0.5rem
+  p
+    margin-bottom: 0.5rem
+
+.add-book-form
+  background-color: #fff
+  border-radius: 8px
+  padding: 1.5rem
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1)
+  .form-label
+    font-weight: 600
+    margin-bottom: 0.5rem
+  .form-check-label
+    font-weight: normal
+
+.btn, .form-control, .book-list li
+  &:focus
+    outline: 2px solid $primary
+    outline-offset: 2px
+
+// .navbar
+//   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1)
+ 
+footer
+  border-top: 1px solid #dee2e6
+  background-color: $bg-color
+  padding: 1rem 0
+
+.book-list, .book-detail
+  display: flex
+  flex-direction: column
+  align-items: center
+  > *
+    max-width: 100%
+    width: 100%
+
+@media (max-width: 767px)
+  .container
+    padding: 1rem
+  .book-details, .add-book-form
+    margin-bottom: 1rem
+
+.book-list-container
+  background-color: #f8f9fa
+  padding: 2rem
+  border-radius: 8px
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1)
+
+.book-card
+  transition: transform 0.3s ease, box-shadow 0.3s ease
+  border: none
+  border-radius: 8px
+  &:hover
+    transform: translateY(-5px)
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.15)
+ 
+.book-title
+  color: #3498db
+  font-weight: bold
+
+.book-link
+  transition: background-color 0.3s ease, transform 0.2s ease
+  &:hover
+    background-color: darken(#3498db, 10%)
+    transform: scale(1.05)
+
+
+.inventory-management
+  background-color: #fff
+  border-radius: 8px
+  padding: 2rem
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1)
+  margin-bottom: 2rem
+
+.inventory-item
+  transition: background-color 0.3s ease-in-out
+  &:hover
+    background-color: $bg-color
+
+.inventory-actions
+  display: flex
+  justify-content: flex-end
+  gap: 0.5rem
+
+.btn-sm
+  padding: 0.25rem 0.5rem
+  font-size: 0.875rem
+
+.table
+  margin-top: 2rem
+  th, td
+    vertical-align: middle
+
+.form-group
+  margin-bottom: 1rem
+
+.alert
+  margin-bottom: 1rem
+  border-radius: 4px
+
+// .navbar-nav .nav-link
+//   transition: color 0.3s ease-in-out
+//   &:hover
+//     color: $primary-light
+
+input, textarea
+  transition: border-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out
+  &:focus
+    border-color: $primary
+    box-shadow: 0 0 0 0.2rem rgba($primary, 0.25)
+
+@keyframes fadeIn
+  from
+    opacity: 0
+  to
+    opacity: 1
+
+footer
+  animation: fadeIn 1s ease-in-out
+
+
+@media (max-width: 768px)
+  .inventory-actions
+    flex-direction: column
+    align-items: stretch
+    .btn
+      margin-bottom: 0.5rem
+
+  .table
+    font-size: 0.9rem
+
+  .inventory-management
+    padding: 1rem
+
+  h1
+    font-size: 2rem 
+
+.navbar
+  // Styles for the mobile navbar
+  &.fixed-bottom
+    position: fixed
+    bottom: 0 
+    left: 0
+    right: 0
+    z-index: 1000 
+
+    .navbar-nav
+      display: flex
+      justify-content: space-around 
+      width: 100% 
+
+      .nav-link
+        flex-direction: column 
+        align-items: center 
+
+        i
+          margin-bottom: 0.25rem 
+          font-size: 1.5rem 
+.content 
+  padding-bottom: 600px 
