@@ -192,7 +192,8 @@ const InventoryManagement: React.FC = () => {
             <>
               <td>
                 <img
-                  src={`${import.meta.env.VITE_API_URL}/images/${book.imagePath}`}
+                  // src={`${import.meta.env.VITE_API_URL}/images/${book.imagePath}`}
+                  src = {`http://localhost:5009/images/${book.imagePath}`}
                   alt={book.title}
                   style={{ maxWidth: '100px', maxHeight: '100px' }}
                 />

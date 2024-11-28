@@ -2,7 +2,6 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'react-hot-toast';
 import apiService from './apiService';
 
-// Query key factory
 const keys = {
   inventory: {
     all: ['inventory'] as const,

@@ -1,5 +1,4 @@
-import type React from 'react';
-import { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 
 type Theme = 'light' | 'dark';
@@ -20,13 +19,14 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
 
   useEffect(() => {
     localStorage.setItem('theme', theme);
-    document.documentElement.classList.toggle('dark', theme === 'dark');
+    document.body.classList.toggle('light-theme', theme === 'light');
+    document.body.classList.toggle('dark-theme', theme === 'dark');
   }, [theme]);
 
   const toggleTheme = () => {
     setTheme((prevTheme) => {
       const newTheme = prevTheme === 'light' ? 'dark' : 'light';
-      toast.success(`Switched to ${newTheme} mode!`); // Display toast
+      toast.success(`Switched to ${newTheme} mode!`);
       return newTheme;
     });
   };

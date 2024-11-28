@@ -11,12 +11,10 @@ const ErrorBoundary: React.FC<ErrorBoundaryProps> = ({ children }) => {
 
   useEffect(() => {
     if (hasError && error) {
-      // Display an error toast
       toast.error(error.message || 'An error occurred. Please check the console for more details.');
     }
   }, [hasError, error]);
 
-  // This error boundary will catch errors in the children components
   const handleError = (error: Error) => {
     setHasError(true);
     setError(error);
@@ -39,7 +37,6 @@ const ErrorBoundary: React.FC<ErrorBoundaryProps> = ({ children }) => {
   return <ErrorBoundaryWrapper onError={handleError}>{children}</ErrorBoundaryWrapper>;
 };
 
-// Wrapper for child components that catches errors
 const ErrorBoundaryWrapper: React.FC<{ children: ReactNode; onError: (error: Error) => void }> = ({ children, onError }) => {
   try {
     return <>{children}</>;

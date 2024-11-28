@@ -1,3 +1,8 @@
+@use "sass:color"
+@use "bootstrap" as *
+
+
+  
 $primary: #3498db
 $bg-color: #f8f9fa
 $text-color: #333
@@ -23,8 +28,8 @@ $text-color: #333
   border-radius: 4px
   transition: background-color 0.2s, border-color 0.2s
   &:hover, &:focus
-    background-color: darken($primary, 10%)
-    border-color: darken($primary, 10%)
+    background-color: color.adjust($primary, $lightness: -10%)
+    border-color: color.adjust($primary, $lightness: -10%)
 
 .inventory-form
   display: flex
@@ -47,14 +52,14 @@ $info: #2980b9
 $success: #35a865
 $warning: #f39c12
 $danger: #c0392b
-$primary-light: lighten($primary, 15%)
-$primary-dark: darken($primary, 15%)
+$primary-light: color.adjust($primary, $lightness: 15%)
+$primary-dark: color.adjust($primary, $lightness: -15%)
 $bg-color: #f8f9fa
 $text-color: #333
 $text-muted: #6c757d
 $theme-colors: ("primary": $primary, "info": $info, "success": $success, "warning": $warning, "danger": $danger)
 
-@import "bootstrap/scss/bootstrap"
+// @import "bootstrap/scss/bootstrap"
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap')
 
 $font-family-base: "Playfair Display"
@@ -106,8 +111,8 @@ h2, h3, h4, h5, h6
     border-color: $primary
     transition: background-color 0.2s, border-color 0.2s, transform 0.2s
     &:hover, &:focus
-      background-color: darken($primary, 10%)
-      border-color: $primary-dark
+      background-color: color.scale($primary, $lightness: -10%)
+      border-color: color.scale($primary, $lightness: -10%)
       transform: translateY(-2px)
 
 .form-control
@@ -203,7 +208,7 @@ footer
 .book-link
   transition: background-color 0.3s ease, transform 0.2s ease
   &:hover
-    background-color: darken(#3498db, 10%)
+    background-color: color.adjust($primary, $lightness: -10%)
     transform: scale(1.05)
 
 
@@ -300,3 +305,28 @@ footer
           font-size: 1.5rem 
 .content 
   padding-bottom: 600px 
+
+
+
+// Light Theme Variables
+$background-light: #ffffff
+$text-light: #000000
+
+// Dark Theme Variables
+$background-dark: #212529
+$text-dark: #f8f9fa
+
+// Common Styles
+body 
+  &.light-theme 
+    background-color: $background-light
+    color: $text-light
+  
+
+  &.dark-theme 
+    background-color: $background-dark
+    color: $text-dark
+  
+
+  transition: background-color 0.3s, color 0.3s
+

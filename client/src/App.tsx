@@ -1,8 +1,8 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Toaster } from 'react-hot-toast';
-import './App.css';
+import './sass.sass';
 import InventoryProviderWithClient from './component/InventoryContext';
-import { Nav, Container, Row, Col } from "react-bootstrap";
+import { Container, Row, Col } from "react-bootstrap";
 import ErrorBoundary from './component/ErrorBoundry';
 import BookList from './component/BookList';
 import BookDetail from './component/BookDetail';
@@ -14,17 +14,20 @@ import TanStack from './component/TanStack';
 import LoginButton from './AuthLogic/LoginButton';
 import Providers from './AuthLogic/provider';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'; 
+import Navbar from './component/Navbar';
+import { ThemeProvider } from './context/ThemeContext';
 const queryClient = new QueryClient();
 const App: React.FC = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <Providers>
+        <ThemeProvider>
         <InventoryProviderWithClient>
           <LoginButton />
-          <ErrorBoundary> {/* Add ErrorBoundary here */}
+          <ErrorBoundary> 
             <Router>
               <Toaster position="top-right" />
-
+              <Navbar />
               <Container className="mt-4 content">
                 <Row>
                   <Col>
@@ -47,6 +50,7 @@ const App: React.FC = () => {
             </Router>
           </ErrorBoundary>
         </InventoryProviderWithClient>
+        </ThemeProvider>
       </Providers>
     </QueryClientProvider>
   );

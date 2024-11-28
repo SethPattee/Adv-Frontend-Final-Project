@@ -1,0 +1,24 @@
+// styles/themes.scss
+
+// Light Theme Variables
+$background-light: #ffffff;
+$text-light: #000000;
+
+// Dark Theme Variables
+$background-dark: #212529;
+$text-dark: #f8f9fa;
+
+// Common Styles
+body {
+  &.light-theme {
+    background-color: $background-light;
+    color: $text-light;
+  }
+
+  &.dark-theme {
+    background-color: $background-dark;
+    color: $text-dark;
+  }
+
+  transition: background-color 0.3s, color 0.3s;
+}

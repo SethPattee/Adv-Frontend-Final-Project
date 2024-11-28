@@ -103,43 +103,6 @@ var inventoryItems = new Dictionary<string, InventoryItem>();
 const string FILE_PATH = "data/inventory.json";
 const string IMAGE_DIRECTORY = "data/images";
 const string DEFAULT_IMAGE = "default_image.jpg";
-
-// Define endpoints
-
-// GET /api/profile - Retrieve authenticated user's profile
-// app.MapGet("/api/profile", async (ClaimsPrincipal user, AppDbContext dbContext) =>
-// {
-//     var userIdClaim = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-//     if (userIdClaim == null) return Results.Unauthorized();
-
-//     var profile = await dbContext.Profiles
-//         .FirstOrDefaultAsync(p => p.UserId == int.Parse(userIdClaim));
-
-//     if (profile == null) return Results.NotFound("Profile not found");
-
-//     return Results.Ok(profile);
-// }).RequireAuthorization();
-
-// PUT /api/profile - Update authenticated user's profile
-// app.MapPut("/api/profile", async (ClaimsPrincipal user, [FromBody] ProfileUpdateDto profileUpdate, AppDbContext dbContext) =>
-// {
-//     var userIdClaim = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-//     if (userIdClaim == null) return Results.Unauthorized();
-
-//     var profile = await dbContext.Profiles
-//         .FirstOrDefaultAsync(p => p.UserId == int.Parse(userIdClaim));
-
-//     if (profile == null) return Results.NotFound("Profile not found");
-
-//     // Update profile fields
-//     if (profileUpdate.Bio != null) profile.Bio = profileUpdate.Bio;
-//     if (profileUpdate.AvatarUrl != null) profile.AvatarUrl = profileUpdate.AvatarUrl;
-
-//     dbContext.Profiles.Update(profile);
-//     await dbContext.SaveChangesAsync();
-
-//     return Results.Ok(profile);
-// }).RequireAuthorization();
 app.MapGet("/public", () =>
 {
     Console.WriteLine("Used Public");
@@ -161,29 +124,6 @@ app.MapGet("/authonly", (ClaimsPrincipal user) =>
 
     return "Hello Authenticated World!";
 }).RequireAuthorization();
-
-// GET /api/blog - List all blog posts
-// app.MapGet("/api/blog", async (AppDbContext dbContext) =>
-// {
-//     var blog_posts = await dbContext.blog_posts.ToListAsync();
-//     return Results.Ok(blog_posts);
-// });
-
-// // POST /api/blog - Submit a new blog post
-// app.MapPost("/api/blog", async (ClaimsPrincipal user, [FromBody] BlogPost newPost, AppDbContext dbContext) =>
-// {
-//     var userIdClaim = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-//     if (userIdClaim == null) return Results.Unauthorized();
-
-//     newPost.UserId = int.Parse(userIdClaim);
-//     newPost.CreatedAt = DateTime.Now;
-//     newPost.UpdatedAt = DateTime.Now;
-
-//     dbContext.blog_posts.Add(newPost);
-//     await dbContext.SaveChangesAsync();
-
-//     return Results.Ok(newPost);
-// }).RequireAuthorization();
 
 
 if (!Directory.Exists(IMAGE_DIRECTORY))
@@ -244,7 +184,6 @@ void SaveData()
 
 app.UseStaticFiles(new StaticFileOptions
 {
-    // FileProvider = new PhysicalFileProvider(IMAGE_DIRECTORY),
     FileProvider = new PhysicalFileProvider(Path.GetFullPath(IMAGE_DIRECTORY)),
     RequestPath = "/images"
 });
@@ -389,10 +328,7 @@ public class InventoryItem
 }
 //
 
-// DTO for updating profile
-public record ProfileUpdateDto(string? Bio, string? AvatarUrl);
 
-// Database context and models
 public class BlogPost
 {
     public int Id { get; set; }
@@ -403,18 +339,9 @@ public class BlogPost
     public DateTime UpdatedAt { get; set; } = DateTime.Now;
 }
 
-public class AppDbContext : DbContext
-{
-    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
-
-    public DbSet<Profile> Profiles { get; set; }
-    public DbSet<BlogPost> blog_posts { get; set; }
-}
-
 public class Profile
 {
     public int Id { get; set; }
-    public int UserId { get; set; }  // Corresponds to the authenticated user's ID
     public string Username { get; set; }
     public string AvatarUrl { get; set; }
     public string Bio { get; set; }
