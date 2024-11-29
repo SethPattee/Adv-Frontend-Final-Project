@@ -32,12 +32,16 @@ function LoginButton() {
       </div>
     );
   }
-
   return (
-    <button type="button" onClick={() => void auth.signinRedirect()}>
+    <button
+      type="button"
+      className="btn btn-primary"
+      onClick={() => void auth.signinRedirect()}
+    >
       Log in
     </button>
   );
-}
+};
+
 
 export default LoginButton;

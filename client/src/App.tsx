@@ -16,6 +16,7 @@ import Providers from './AuthLogic/provider';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'; 
 import Navbar from './component/Navbar';
 import { ThemeProvider } from './context/ThemeContext';
+import ErrorThrower from './component/ErrorThrower';
 const queryClient = new QueryClient();
 const App: React.FC = () => {
   return (
@@ -23,7 +24,6 @@ const App: React.FC = () => {
       <Providers>
         <ThemeProvider>
         <InventoryProviderWithClient>
-          <LoginButton />
           <ErrorBoundary> 
             <Router>
               <Toaster position="top-right" />
@@ -42,6 +42,7 @@ const App: React.FC = () => {
                       <Route path="/inventory" element={<InventoryManagement />} />
                       <Route path="/spin" element={<Spinner />} />
                       <Route path="/tan" element={<TanStack />} />
+                      <Route path="/e" element={<ErrorThrower />} />
                     </Routes>
                     <InventoryForm />
                   </Col>

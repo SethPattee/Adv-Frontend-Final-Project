@@ -7,15 +7,15 @@ import { useInventoryQuery, useAddItemMutation, useUpdateItemMutation, useDelete
 import ImageUploadPreview from './ImageUpload';
 
 const InventoryManagement: React.FC = () => {
-  const [newBook, setNewBook] = useState({
+  const [newSticker, setNewSticker] = useState({
     title: '',
     author: '',
     description: '',
   });
-  const [newBookImage, setNewBookImage] = useState<File | null>(null);
+  const [newStickerImage, setNewStickerImage] = useState<File | null>(null);
   const [editId, setEditId] = useState<string | null>(null);
-  const [editBook, setEditBook] = useState<InventoryItem | null>(null);
-  const [editBookImage, setEditBookImage] = useState<File | null>(null);
+  const [editSticker, setEditSticker] = useState<InventoryItem | null>(null);
+  const [editBookImage, setEditStickerImage] = useState<File | null>(null);
   const imageUploadRef = useRef<{ resetImage: () => void } | null>(null);
 
   const { data: inventory, isLoading, error } = useInventoryQuery();
@@ -25,18 +25,18 @@ const InventoryManagement: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (newBook.title.trim().length > 0) {
+    if (newSticker.title.trim().length > 0) {
       const formData = new FormData();
-      formData.append('title', newBook.title);
-      formData.append('author', newBook.author || '');
-      formData.append('description', newBook.description || '');
-      if (newBookImage) {
-        formData.append('image', newBookImage);
+      formData.append('title', newSticker.title);
+      formData.append('author', newSticker.author || '');
+      formData.append('description', newSticker.description || '');
+      if (newStickerImage) {
+        formData.append('image', newStickerImage);
       }
       addItemMutation.mutate(formData, {
         onSuccess: () => {
-          setNewBook({ title: '', author: '', description: '' });
-          setNewBookImage(null);
+          setNewSticker({ title: '', author: '', description: '' });
+          setNewStickerImage(null);
           if (imageUploadRef.current) {
             imageUploadRef.current.resetImage();
           }
@@ -47,26 +47,26 @@ const InventoryManagement: React.FC = () => {
 
   const handleEdit = (book: InventoryItem) => {
     setEditId(book.id);
-    setEditBook(book);
-    setEditBookImage(null);
+    setEditSticker(book);
+    setEditStickerImage(null);
   };
 
   const handleSaveEdit = async () => {
-    if (editBook) {
+    if (editSticker) {
       const formData = new FormData();
-      formData.append('title', editBook.title);
-      formData.append('author', editBook.author || '');
-      formData.append('description', editBook.description || '');
+      formData.append('title', editSticker.title);
+      formData.append('author', editSticker.author || '');
+      formData.append('description', editSticker.description || '');
       if (editBookImage) {
         formData.append('image', editBookImage);
       }
       updateItemMutation.mutate(
-        { id: editBook.id, formData },
+        { id: editSticker.id, formData },
         {
           onSuccess: () => {
             setEditId(null);
-            setEditBook(null);
-            setEditBookImage(null);
+            setEditSticker(null);
+            setEditStickerImage(null);
           },
         }
       );
@@ -75,8 +75,8 @@ const InventoryManagement: React.FC = () => {
 
   const handleCancelEdit = () => {
     setEditId(null);
-    setEditBook(null);
-    setEditBookImage(null);
+    setEditSticker(null);
+    setEditStickerImage(null);
   };
 
   const handleDelete = async (id: string) => {
@@ -92,27 +92,27 @@ const InventoryManagement: React.FC = () => {
   }
   return (
     <Container className="my-4">
-      <h1>Inventory Management</h1>
+      <h1>Sticker Management</h1>
       {error && <Alert variant="danger">{error}</Alert>}
       <Form onSubmit={handleSubmit} className="mb-4">
         <Form.Group controlId="formTitle">
           <Form.Label>Title</Form.Label>
           <Form.Control
             type="text"
-            placeholder="Enter book title"
-            value={newBook.title}
-            onChange={(e) => setNewBook({ ...newBook, title: e.target.value })}
+            placeholder="Enter Sticker title"
+            value={newSticker.title}
+            onChange={(e) => setNewSticker({ ...newSticker, title: e.target.value })}
             required
           />
         </Form.Group>
 
-        <Form.Group controlId="formAuthor">
-          <Form.Label>Author</Form.Label>
+        <Form.Group controlId="formPrice">
+          <Form.Label>Price</Form.Label>
           <Form.Control
             type="text"
-            placeholder="Enter author name"
-            value={newBook.author}
-            onChange={(e) => setNewBook({ ...newBook, author: e.target.value })}
+            placeholder="Enter Price"
+            value={newSticker.author}
+            onChange={(e) => setNewSticker({ ...newSticker, author: e.target.value })}
           />
         </Form.Group>
 
@@ -121,19 +121,19 @@ const InventoryManagement: React.FC = () => {
           <Form.Control
             as="textarea"
             rows={3}
-            placeholder="Enter book description"
-            value={newBook.description}
-            onChange={(e) => setNewBook({ ...newBook, description: e.target.value })}
+            placeholder="Enter Sticker description"
+            value={newSticker.description}
+            onChange={(e) => setNewSticker({ ...newSticker, description: e.target.value })}
           />
         </Form.Group>
 
         <ImageUploadPreview
-          onImageChange={(file) => setNewBookImage(file)}
+          onImageChange={(file) => setNewStickerImage(file)}
           ref={imageUploadRef}
         />
 
         <Button variant="primary" type="submit" className="mt-3">
-          Add Book
+          Add Sticker
         </Button>
       </Form>
       <Table striped bordered hover responsive className="mt-4">
@@ -141,7 +141,7 @@ const InventoryManagement: React.FC = () => {
           <tr>
             <th>Image</th>
             <th>Title</th>
-            <th>Author</th>
+            <th>Price</th>
             <th>Description</th>
             <th>Actions</th>
           </tr>
@@ -154,29 +154,29 @@ const InventoryManagement: React.FC = () => {
               <td>
                 <ImageUploadPreview
                   initialImage={book.imagePath}
-                  onImageChange={(file) => setEditBookImage(file)}
+                  onImageChange={(file) => setEditStickerImage(file)}
                 />
               </td>
               <td>
                 <Form.Control
                   type="text"
-                  value={editBook?.title || ''}
-                  onChange={(e) => setEditBook({ ...editBook!, title: e.target.value })}
+                  value={editSticker?.title || ''}
+                  onChange={(e) => setEditSticker({ ...editSticker!, title: e.target.value })}
                 />
               </td>
               <td>
                 <Form.Control
                   type="text"
-                  value={editBook?.author || ''}
-                  onChange={(e) => setEditBook({ ...editBook!, author: e.target.value })}
+                  value={editSticker?.author || ''}
+                  onChange={(e) => setEditSticker({ ...editSticker!, author: e.target.value })}
                 />
               </td>
               <td>
                 <Form.Control
                   as="textarea"
                   rows={2}
-                  value={editBook?.description || ''}
-                  onChange={(e) => setEditBook({ ...editBook!, description: e.target.value })}
+                  value={editSticker?.description || ''}
+                  onChange={(e) => setEditSticker({ ...editSticker!, description: e.target.value })}
                 />
               </td>
               <td>

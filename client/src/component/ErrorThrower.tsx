@@ -4,7 +4,7 @@ const ErrorThrower: React.FC = () => {
   const [throwError, setThrowError] = useState(false);
 
   if (throwError) {
-    throw new Error("User-triggered error: Something has gone wrong!");
+    throw new Error("User-triggered error: Something has gone wrong AHHHHHHHHHHHHHHHHHHHHHHHHHHHHH!");
   }
 
   return (

@@ -26,7 +26,9 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
   const toggleTheme = () => {
     setTheme((prevTheme) => {
       const newTheme = prevTheme === 'light' ? 'dark' : 'light';
-      toast.success(`Switched to ${newTheme} mode!`);
+      toast.success(`Switched to ${newTheme} mode!`, {
+        position: 'top-center',
+      });
       return newTheme;
     });
   };

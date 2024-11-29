@@ -22,6 +22,12 @@ jobs:
           cd client 
           npm run check
 
+      - name: "Testing"
+        run: |
+          echo "Running Tests"
+          cd client
+          npm run test
+
       - name: "Build and Push Docker RSBuild App image"
         run: |
           cd client
