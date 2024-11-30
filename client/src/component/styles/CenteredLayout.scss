@@ -1,0 +1,10 @@
+.centered-layout {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh; // Full height of the viewport
+  padding: 1rem; // Add padding for spacing
+  background-color: #1a1a2e; // Cosmic-themed background
+  color: #ffffff; // Text color for light text on dark background
+}

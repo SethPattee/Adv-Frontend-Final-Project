@@ -1,0 +1,21 @@
+.sidebar-layout {
+    display: flex;
+    min-height: 100vh;
+  
+    .sidebar {
+      width: 250px;
+      background: linear-gradient(to bottom, #2d2d4b, #1c1c35);
+      color: #fff;
+      padding: 20px;
+      box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    }
+  
+    .main-content {
+      flex: 1;
+      padding: 20px;
+      background: #1a1a3f;
+      color: #ffffff;
+    }
+  }
+
+  

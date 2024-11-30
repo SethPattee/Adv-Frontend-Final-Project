@@ -1,0 +1,36 @@
+.blog-page {
+    .blog-form {
+      background: linear-gradient(135deg, #2e2e58, #001529);
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+  
+    .blog-list {
+      .blog-post {
+        background: #1e1e3e;
+        color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  
+        .card-title {
+          color: #ffd700;
+          font-size: 1.5rem;
+          word-wrap: break-word; 
+          word-break: break-word; 
+          overflow-wrap: break-word;
+        }
+        
+  
+        .card-text {
+          font-size: 1.1rem;
+        }
+  
+        small {
+          display: block;
+          margin-top: 10px;
+        }
+      }
+    }
+  }
+  

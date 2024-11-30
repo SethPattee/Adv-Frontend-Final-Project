@@ -1,0 +1,72 @@
+.centered-layout {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #1a1a2e;
+    color: #fff;
+    text-align: center;
+  
+    h1 {
+      margin-bottom: 1rem;
+      color: #ffd700; // Golden text for the title
+    }
+  
+    .wheel {
+      position: relative;
+      width: 300px;
+      height: 300px;
+      border-radius: 50%;
+      border: 5px solid #fff;
+      overflow: hidden;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  
+      .segment {
+        position: absolute;
+        width: 50%;
+        height: 50%;
+        background-color: #ffdd59;
+        transform-origin: 100% 100%;
+        clip-path: polygon(100% 100%, 0% 100%, 100% 0%);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+  
+        span {
+          transform: rotate(-60deg); // Rotate text back to make it readable
+          font-size: 0.9rem;
+          font-weight: bold;
+          color: #000;
+        }
+      }
+    }
+  
+    .spin-button {
+      margin-top: 1rem;
+      padding: 0.5rem 1rem;
+      font-size: 1.2rem;
+      color: #fff;
+      background-color: #007bff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+  
+      &:hover {
+        background-color: #0056b3;
+      }
+  
+      &:disabled {
+        background-color: #6c757d;
+        cursor: not-allowed;
+      }
+    }
+  
+    .reward {
+      margin-top: 1rem;
+      font-size: 1.5rem;
+      color: #32cd32; // Green for the reward text
+    }
+  }
+  

@@ -1,0 +1,29 @@
+.header-footer-layout {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  
+    .header {
+      background: #2e2e58;
+      padding: 15px;
+      color: #ffd700;
+      text-align: center;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+  
+    .content {
+      flex: 1;
+      padding: 20px;
+      background: #1a1a3f;
+      color: #ffffff;
+    }
+  
+    .footer {
+      background: #2e2e58;
+      padding: 10px;
+      text-align: center;
+      color: #ffffff;
+      box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+    }
+  }
+  

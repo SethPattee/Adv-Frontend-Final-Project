@@ -17,6 +17,13 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './component/Navbar';
 import { ThemeProvider } from './context/ThemeContext';
 import ErrorThrower from './component/ErrorThrower';
+import GenericFormInput from './component/GenericFormInputBlogProfile';
+import BlogPage from './component/BlogPage';
+import FeedbackPage from './component/FeedbackPage';
+import ContactPage from './component/ContactPage';
+import GenericPage from './component/usedgeneric/GenericPage';
+import StarGallery from './component/usedgeneric/StarGallery';
+import SpinningWheel from './component/usedgeneric/SpinningWheel';
 const queryClient = new QueryClient();
 const App: React.FC = () => {
   return (
@@ -43,8 +50,14 @@ const App: React.FC = () => {
                       <Route path="/spin" element={<Spinner />} />
                       <Route path="/tan" element={<TanStack />} />
                       <Route path="/e" element={<ErrorThrower />} />
+                      <Route path="/g" element={<BlogPage />} />
+                      <Route path="/f" element={<FeedbackPage />} />
+                      <Route path="/c" element={<ContactPage />} />
+                      <Route path="/gen" element={<GenericPage />} />
+                      <Route path="/gal" element={<StarGallery />} />
+                      <Route path="/sp" element={<SpinningWheel />} />
                     </Routes>
-                    <InventoryForm />
+                    {/* <InventoryForm /> */}
                   </Col>
                 </Row>
               </Container>

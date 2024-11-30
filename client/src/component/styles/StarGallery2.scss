@@ -1,0 +1,23 @@
+.star-gallery {
+    padding: 2rem;
+    text-align: center;
+  
+    h1 {
+      margin-bottom: 1.5rem;
+    }
+  
+    .star-image {
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+  
+      img {
+        width: 100%;
+        height: auto;
+        display: block;
+      }
+    }
+  }
+  
