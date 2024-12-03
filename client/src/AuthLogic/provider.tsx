@@ -8,8 +8,8 @@ import {
 const oidcConfig: AuthProviderProps = {
   authority: 'https://auth.snowse.duckdns.org/realms/advanced-frontend/',
   client_id: 'seth-final',
-  // redirect_uri: "http://localhost:3000/", //change for kubernest
-  redirect_uri: 'https://sethstar.duckdns.org/',
+  redirect_uri: "http://localhost:3000/", //change for kubernest
+  // redirect_uri: 'https://sethstar.duckdns.org/',
   silent_redirect_uri: 'https://sethstar.duckdns.org/silent-renew.html',
   // silent_redirect_uri: "http://localhost:3000/silent-renew.html",
   automaticSilentRenew: true,
