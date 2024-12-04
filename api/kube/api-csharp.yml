@@ -4,21 +4,21 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   namespace: sethfinal
-  name: inventoryapi-deployment
+  name: starapi-deployment
   labels:
-    app: inventoryapi
+    app: starapi
 spec:
   selector:
     matchLabels:
-      app: inventoryapi
+      app: starapi
   template:
     metadata:
       labels:
-        app: inventoryapi
+        app: starapi
     spec:
       containers:
-      - name: inventoryapi
-        image: varxii/inventoryapi:${RUN_ID}
+      - name: starapi
+        image: varxii/advfrontend:${RUN_ID} #;'odfsja;kljf'
         ports:
         - containerPort: 8080
         volumeMounts:
@@ -35,11 +35,11 @@ apiVersion: v1
 kind: Service
 metadata:
   namespace: sethfinal
-  name: inventoryapi-service
+  name: starapi-service
 spec:
   type: ClusterIP
   selector:
-    app: inventoryapi
+    app: starapi
   ports:
     - port: 8080
       targetPort: 8080
