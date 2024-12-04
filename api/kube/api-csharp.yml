@@ -85,7 +85,7 @@ spec:
   #   - fngauto.duckdns.org
   ingressClassName: nginx
   rules:
-  - host: sethfinal.duckdns.org
+  - host: sethapi.duckdns.org
     http:
       paths:
       - path: /
