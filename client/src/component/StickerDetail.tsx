@@ -5,7 +5,7 @@ import { useQuery } from '@tanstack/react-query';
 import apiService from './apiService';
 import Spinner from './Spinner';
 
-const BookDetail: React.FC = () => {
+const StickerDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
 
   const { data: inventory, isLoading, error } = useQuery({
@@ -26,7 +26,7 @@ const BookDetail: React.FC = () => {
       <Container>
         <h1>Error loading book details</h1>
         <p>{(error as Error).message}</p>
-        <Link to="/books" className="btn btn-primary">
+        <Link to="/stickers" className="btn btn-primary">
           Back to List
         </Link>
       </Container>
@@ -38,8 +38,8 @@ const BookDetail: React.FC = () => {
   if (!book) {
     return (
       <Container>
-        <h1>Book not found</h1>
-        <Link to="/books" className="btn btn-primary">
+        <h1>Sticker not found</h1>
+        <Link to="/stickers" className="btn btn-primary">
           Back to List
         </Link>
       </Container>
@@ -54,9 +54,9 @@ const BookDetail: React.FC = () => {
           <Card>
             <Card.Body>
               <Card.Title>{book.title}</Card.Title>
-              <Card.Subtitle>{book.author || 'Unknown Author'}</Card.Subtitle>
+              <Card.Subtitle>{book.author || 'Unknown Price'}</Card.Subtitle>
               <Card.Text>{book.description || 'No description available.'}</Card.Text>
-              <Link to="/books" className="btn btn-primary">
+              <Link to="/stickers" className="btn btn-primary">
                 Back to List
               </Link>
             </Card.Body>
@@ -67,4 +67,4 @@ const BookDetail: React.FC = () => {
   );
 };
 
-export default BookDetail;
+export default StickerDetail;

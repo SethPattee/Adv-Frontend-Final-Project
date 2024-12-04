@@ -1,59 +1,4 @@
-// using System.Security.Claims;
 
-// var builder = WebApplication.CreateBuilder(args);
-
-// builder.Services.AddCors(options =>
-// {
-//     options.AddDefaultPolicy(policy =>
-//     {
-//         policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
-//     });
-// });
-
-// builder.Services.AddAuthentication("Bearer")
-//     .AddJwtBearer("Bearer", options =>
-//     {
-//         options.Authority = "https://auth.snowse.duckdns.org/realms/advanced-frontend/";
-//         options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
-//         {
-//             ValidateIssuer = true,
-//             ValidIssuer = "https://auth.snowse.duckdns.org/realms/advanced-frontend/",
-//             ValidateAudience = true,
-//             ValidAudience = "seth-authdemo",
-//         };
-//     });
-
-// builder.Services.AddAuthorization();
-
-// var app = builder.Build();
-
-// app.UseCors();
-// app.UseAuthentication();
-// app.UseAuthorization();
-
-// app.MapGet("/public", () =>
-// {
-//     Console.WriteLine("Used Public");
-//     return "Hello World!";
-// }).AllowAnonymous();
-
-// app.MapGet("/authonly", (ClaimsPrincipal user) =>
-// {
-//     var email = user.FindFirst(ClaimTypes.Email)?.Value;
-
-//     if (email != null)
-//     {
-//         Console.WriteLine($"Authenticated user's email: {email}");
-//     }
-//     else
-//     {
-//         Console.WriteLine("Email claim not found for authenticated user.");
-//     }
-
-//     return "Hello Authenticated World!";
-// }).RequireAuthorization();
-
-// app.Run();
 
 using System.Security.Claims;
 using System.Text.Json;
@@ -153,11 +98,11 @@ void SeedInventory()
 {
     var seedItems = new List<InventoryItem>
     {
-        new InventoryItem { Id = Guid.NewGuid().ToString(), Title = "The Great Gatsby", Author = "F. Scott Fitzgerald", Description = "A classic novel about the American Dream", ImagePath = DEFAULT_IMAGE },
-        new InventoryItem { Id = Guid.NewGuid().ToString(), Title = "To Kill a Mockingbird", Author = "Harper Lee", Description = "A powerful story of racial injustice and loss of innocence", ImagePath = DEFAULT_IMAGE },
-        new InventoryItem { Id = Guid.NewGuid().ToString(), Title = "1984", Author = "George Orwell", Description = "A dystopian novel about totalitarian control", ImagePath = DEFAULT_IMAGE },
-        new InventoryItem { Id = Guid.NewGuid().ToString(), Title = "Pride and Prejudice", Author = "Jane Austen", Description = "A romantic novel of manners", ImagePath = DEFAULT_IMAGE },
-        new InventoryItem { Id = Guid.NewGuid().ToString(), Title = "The Catcher in the Rye", Author = "J.D. Salinger", Description = "A coming-of-age story of teenage angst and alienation", ImagePath = DEFAULT_IMAGE }
+        new InventoryItem { Id = Guid.NewGuid().ToString(), Title = "Sticker 1", Author = "1", Description = "It is a Sticker", ImagePath = DEFAULT_IMAGE },
+        new InventoryItem { Id = Guid.NewGuid().ToString(), Title = "sticker 2", Author = "12", Description = "It is a Sticker", ImagePath = DEFAULT_IMAGE },
+        new InventoryItem { Id = Guid.NewGuid().ToString(), Title = "Sticker 3", Author = "300", Description = "It is a Sticker", ImagePath = DEFAULT_IMAGE },
+        new InventoryItem { Id = Guid.NewGuid().ToString(), Title = "Sticker 4", Author = "40", Description = "It is a Sticker", ImagePath = DEFAULT_IMAGE },
+        new InventoryItem { Id = Guid.NewGuid().ToString(), Title = "Sticker 5", Author = "6", Description = "It is a Sticker", ImagePath = DEFAULT_IMAGE }
     };
 
     foreach (var item in seedItems)

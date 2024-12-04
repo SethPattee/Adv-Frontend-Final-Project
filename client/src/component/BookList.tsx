@@ -38,7 +38,7 @@ const BookList: React.FC = () => {
     return (
       <Container>
         <h1>Error</h1>
-        <p>An error occurred while loading the book list: {error.message}</p>
+        <p>An error occurred while loading the sticker list: {error.message}</p>
       </Container>
     );
   }
@@ -47,7 +47,7 @@ const BookList: React.FC = () => {
     console.error('Inventory data is empty or undefined');
     return (
       <Container>
-        <h1>No Books Available</h1>
+        <h1>No Stickers Available</h1>
       </Container>
     );
   }
@@ -55,7 +55,7 @@ const BookList: React.FC = () => {
 
   return (
     <Container className="book-list-container">
-      <h1 className="text-center mb-4">Our Books</h1>
+      <h1 className="text-center mb-4">Our Stickers</h1>
       <Row>
         {inventory?.map((item) => (
           <Col key={item.id} xs={12} sm={6} md={4} lg={3} className="mb-4">
@@ -69,7 +69,7 @@ const BookList: React.FC = () => {
               <Card.Body>
                 <Card.Title className="book-title">{item.title}</Card.Title>
                 <Card.Text className="book-author">
-                  <strong>Author:</strong> {item.author || 'Unknown'}
+                  <strong>Price:</strong> {item.author || 'Unknown'}
                 </Card.Text>
                 <Card.Text className="book-description">
                   <strong>Description: </strong>

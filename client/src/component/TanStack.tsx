@@ -36,8 +36,8 @@ const TanStack: React.FC = () => {
       <button
         onClick={() => {
           const formData = new FormData();
-          formData.append('title', 'New Book');
-          formData.append('author', 'Author Name');
+          formData.append('title', 'Sticker');
+          formData.append('author', '$1200');
           mutation.mutate(formData);
         }}
       >
