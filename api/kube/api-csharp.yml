@@ -80,9 +80,6 @@ metadata:
   namespace: sethfinal
   name: starapi-ingress
 spec:
-  # tls:
-  # - hosts:
-  #   - fngauto.duckdns.org
   ingressClassName: nginx
   rules:
   - host: sethapi.duckdns.org
@@ -95,4 +92,5 @@ spec:
             name: starapi-service
             port:
               number: 8080
+
 
