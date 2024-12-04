@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
       - name: starapi
-        image: varxii/advfrontend:${RUN_ID} #;'odfsja;kljf'
+        image: varxii/advapi:${RUN_ID} #;'odfsja;kljf'
         ports:
         - containerPort: 8080
         volumeMounts:
