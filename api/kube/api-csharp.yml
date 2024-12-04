@@ -27,7 +27,7 @@ spec:
       volumes:
       - name: data
         persistentVolumeClaim:
-          claimName: inventory-pvc # Updated to match PVC name
+          claimName: starapi-pvc # Updated to match PVC name
 
 ---
 # Service
@@ -49,7 +49,7 @@ spec:
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: star-pv
+  name: starapi-pv
 spec:
   capacity:
     storage: 1Gi
@@ -63,7 +63,7 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: star-pvc # Match this name with Deployment
+  name: starapi-pvc # Match this name with Deployment
   namespace: sethfinal
 spec:
   accessModes:
