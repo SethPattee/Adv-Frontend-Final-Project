@@ -1,4 +1,4 @@
-name: Deploy Vite React App and C# API
+name: Deploy Rsbuild React App and C# API
 on:
   push:
     branches:
@@ -56,7 +56,7 @@ jobs:
         run: |
           echo "Deploying C# API"
           cd api
-          dotnet format
+          # dotnet format
           docker build -t varxii/advapi:${{github.run_id}} -t varxii/advapi:latest .
           docker push varxii/advapi --all-tags
 
