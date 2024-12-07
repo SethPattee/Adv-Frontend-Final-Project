@@ -49,6 +49,7 @@ jobs:
       - name: "Testing"
         run: |
           echo "Running Tests"
+          cd client
           npm run test
 
       - name: "Deploy C# API"
