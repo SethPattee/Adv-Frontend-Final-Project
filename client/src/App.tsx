@@ -26,6 +26,7 @@ import StarGallery from './component/usedgeneric/StarGallery';
 import SpinningWheel from './component/usedgeneric/SpinningWheel';
 import LinksPage from './component/LinksPage';
 import LoginRequiredPage from './component/LoginRequiredPage';
+import Websocket from './component/websockets/WebSocket';
 const queryClient = new QueryClient();
 const App: React.FC = () => {
   return (
@@ -60,6 +61,7 @@ const App: React.FC = () => {
                       <Route path="/links" element={<LinksPage />} />
                       <Route path="*" element={<h1>404 Not Found</h1>} />
                       <Route path="/login" element={<LoginRequiredPage />} />
+                      <Route path="/chat" element={<Websocket />} />
                     </Routes>
                     {/* <InventoryForm /> */}
                   </Col>

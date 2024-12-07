@@ -8,18 +8,19 @@ using Microsoft.Extensions.FileProviders;
 using System.IO;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Net.WebSockets;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Collections.Concurrent;
+
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowAllOrigins", builder =>
-    {
-        builder.AllowAnyOrigin() 
-               .AllowAnyMethod() 
-               .AllowAnyHeader();
-    });
-});
-// Configure JWT authentication
+builder.Services.AddCors();
+
 builder.Services.AddAuthentication("Bearer")
     .AddJwtBearer("Bearer", options =>
     {
@@ -36,13 +37,45 @@ builder.Services.AddAuthentication("Bearer")
 builder.Services.AddAuthorization();
 
 var app = builder.Build();
+app.UseCors(options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
-app.UseCors();
 app.UseCors("AllowAllOrigins");
 app.UseCors("AccessControlAllowOrigin");
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseWebSockets();
+
+var connectedClients = new ConcurrentBag<WebSocket>();
+
+app.MapGet("/", () => "WebSocket Server Running!");
+
+app.Use(async (context, next) =>
+{
+    if (context.Request.Path == "/ws")
+    {
+        if (context.WebSockets.IsWebSocketRequest)
+        {
+            using var webSocket = await context.WebSockets.AcceptWebSocketAsync();
+            Console.WriteLine("WebSocket connected");
+
+            connectedClients.Add(webSocket);
+            await HandleWebSocketConnection(webSocket, connectedClients);
+
+            Console.WriteLine("WebSocket disconnected");
+        }
+        else
+        {
+            context.Response.StatusCode = StatusCodes.Status400BadRequest;
+        }
+    }
+    else
+    {
+        await next();
+    }
+});
+
+
 
 var inventoryItems = new Dictionary<string, InventoryItem>();
 const string FILE_PATH = "data/inventory.json";
@@ -252,15 +285,61 @@ app.MapDelete("/inventory/{id}", (string id) =>
 
 app.MapDelete("/inventory", () =>
 {
-    inventoryItems.Clear(); 
+    inventoryItems.Clear();
     return Results.NoContent();
 });
 
-app.MapGet("/inventory", () => {
+app.MapGet("/inventory", () =>
+{
     return inventoryItems.Values.ToList();
 });
 
 app.Run();
+
+
+
+
+static async Task HandleWebSocketConnection(WebSocket webSocket, ConcurrentBag<WebSocket> clients)
+{
+    var buffer = new byte[1024 * 4];
+
+    try
+    {
+        while (webSocket.State == WebSocketState.Open)
+        {
+            var receiveResult = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
+
+            if (receiveResult.MessageType == WebSocketMessageType.Close)
+            {
+                break;
+            }
+
+            string message = Encoding.UTF8.GetString(buffer, 0, receiveResult.Count);
+            Console.WriteLine($"Received: {message}");
+
+            foreach (var client in clients)
+            {
+                if (client != webSocket && client.State == WebSocketState.Open)
+                {
+                    await client.SendAsync(
+                        new ArraySegment<byte>(Encoding.UTF8.GetBytes(message)), 
+                        WebSocketMessageType.Text,
+                        true,
+                        CancellationToken.None);
+                }
+            }
+        }
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Error: {ex.Message}");
+    }
+    finally
+    {
+        clients.TryTake(out _);
+        await webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "Connection closed", CancellationToken.None);
+    }
+}
 
 
 public class InventoryItem

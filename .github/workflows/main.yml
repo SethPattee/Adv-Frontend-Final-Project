@@ -46,15 +46,16 @@ jobs:
             cat $file | envsubst | kubectl apply -f -
           done
 
-      # - name: "Testing"
-      #   run: |
-      #     echo "Running Tests"
-      #     npm run test
+      - name: "Testing"
+        run: |
+          echo "Running Tests"
+          npm run test
 
       - name: "Deploy C# API"
         run: |
           echo "Deploying C# API"
           cd api
+          dotnet format
           docker build -t varxii/advapi:${{github.run_id}} -t varxii/advapi:latest .
           docker push varxii/advapi --all-tags
 
