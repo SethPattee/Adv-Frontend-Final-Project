@@ -25,6 +25,7 @@ import GenericPage from './component/usedgeneric/GenericPage';
 import StarGallery from './component/usedgeneric/StarGallery';
 import SpinningWheel from './component/usedgeneric/SpinningWheel';
 import LinksPage from './component/LinksPage';
+import LoginRequiredPage from './component/LoginRequiredPage';
 const queryClient = new QueryClient();
 const App: React.FC = () => {
   return (
@@ -57,6 +58,8 @@ const App: React.FC = () => {
                       <Route path="/gallery" element={<StarGallery />} />
                       <Route path="/spin" element={<SpinningWheel />} />
                       <Route path="/links" element={<LinksPage />} />
+                      <Route path="*" element={<h1>404 Not Found</h1>} />
+                      <Route path="/login" element={<LoginRequiredPage />} />
                     </Routes>
                     {/* <InventoryForm /> */}
                   </Col>

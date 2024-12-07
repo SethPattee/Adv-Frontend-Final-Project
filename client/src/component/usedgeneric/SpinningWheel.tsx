@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import "../styles/SpinningWheel.scss";
 import CenteredLayout from "../generic/CenteredLayout";
 
-const rewards = ["$10 Gift Card", "Free Coffee", "Discount Code", "Extra Spin", "Mystery Box", "Try Again"];
+const rewards = ["$10 Gift Card", "Free Coffee", "Discount Code", "Extra Spin", "Mystery Box", "Try Again", "Free Car", "Free Dog"];
 
 const SpinningWheel: React.FC = () => {
   const [isSpinning, setIsSpinning] = useState(false);
