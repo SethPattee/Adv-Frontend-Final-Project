@@ -423,7 +423,33 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
+static void ConfigureServices(IServiceCollection services)
+    {
+        // Register WebSocket service
+        services.AddSingleton<WebSocketService>();
+    }
+ static void Configure(IApplicationBuilder app)
+    {
+        // Enable WebSockets
+        app.UseWebSockets(new WebSocketOptions
+        {
+            KeepAliveInterval = TimeSpan.FromSeconds(120)
+        });
 
+        // WebSocket endpoint
+        app.Use(async (context, next) =>
+        {
+            if (context.Request.Path == "/ws")
+            {
+                var webSocketService = context.RequestServices.GetRequiredService<WebSocketService>();
+                await webSocketService.HandleWebSocketConnection(context);
+            }
+            else
+            {
+                await next();
+            }
+        });
+    }
 // Improved CORS configuration
 builder.Services.AddCors(options =>
 {
@@ -803,6 +829,118 @@ public class WebSocketManager
 }
 
 
+public class WebSocketService
+{
+    private readonly ConcurrentDictionary<string, WebSocket> _clients = new();
+
+    public async Task HandleWebSocketConnection(HttpContext context)
+    {
+        if (context.WebSockets.IsWebSocketRequest)
+        {
+            using WebSocket webSocket = await context.WebSockets.AcceptWebSocketAsync();
+            string clientId = Guid.NewGuid().ToString();
+            _clients[clientId] = webSocket;
+
+            try
+            {
+                await HandleClient(clientId, webSocket);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"WebSocket error for client {clientId}: {ex.Message}");
+            }
+            finally
+            {
+                _clients.TryRemove(clientId, out _);
+                await CloseWebSocket(webSocket);
+            }
+        }
+        else
+        {
+            context.Response.StatusCode = StatusCodes.Status400BadRequest;
+        }
+    }
+
+    private async Task HandleClient(string clientId, WebSocket webSocket)
+    {
+        var buffer = new byte[1024 * 4];
+
+        while (webSocket.State == WebSocketState.Open)
+        {
+            WebSocketReceiveResult result = await webSocket.ReceiveAsync(
+                new ArraySegment<byte>(buffer), 
+                CancellationToken.None
+            );
+
+            if (result.MessageType == WebSocketMessageType.Close)
+            {
+                await webSocket.CloseAsync(
+                    WebSocketCloseStatus.NormalClosure, 
+                    "Closing", 
+                    CancellationToken.None
+                );
+                break;
+            }
+
+            // Process the received message
+            string message = Encoding.UTF8.GetString(buffer, 0, result.Count);
+            Console.WriteLine($"Received from {clientId}: {message}");
+
+            // Broadcast to all clients except the sender
+            await BroadcastMessage(message, clientId);
+        }
+    }
+
+    private async Task BroadcastMessage(string message, string excludeClientId)
+    {
+        var tasks = _clients
+            .Where(c => c.Key != excludeClientId && c.Value.State == WebSocketState.Open)
+            .Select(async client =>
+            {
+                try
+                {
+                    await client.Value.SendAsync(
+                        new ArraySegment<byte>(Encoding.UTF8.GetBytes(message)),
+                        WebSocketMessageType.Text,
+                        true,
+                        CancellationToken.None
+                    );
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error sending to client {client.Key}: {ex.Message}");
+                }
+            });
+
+        await Task.WhenAll(tasks);
+    }
+
+    private async Task CloseWebSocket(WebSocket webSocket)
+    {
+        if (webSocket.State != WebSocketState.Closed)
+        {
+            await webSocket.CloseAsync(
+                WebSocketCloseStatus.NormalClosure, 
+                "Connection closed", 
+                CancellationToken.None
+            );
+        }
+    }
+
+    public async Task SendMessageToClient(string clientId, string message)
+    {
+        if (_clients.TryGetValue(clientId, out WebSocket webSocket) && 
+            webSocket.State == WebSocketState.Open)
+        {
+            await webSocket.SendAsync(
+                new ArraySegment<byte>(Encoding.UTF8.GetBytes(message)),
+                WebSocketMessageType.Text,
+                true,
+                CancellationToken.None
+            );
+        }
+    }
+}
 
 // Existing model classes remain the same
 public class InventoryItem
