@@ -424,39 +424,82 @@ using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 static void ConfigureServices(IServiceCollection services)
-    {
-        // Register WebSocket service
-        services.AddSingleton<WebSocketService>();
-    }
- static void Configure(IApplicationBuilder app)
-    {
-        // Enable WebSockets
-        app.UseWebSockets(new WebSocketOptions
-        {
-            KeepAliveInterval = TimeSpan.FromSeconds(120)
-        });
+{
+    // Register WebSocket service
+    services.AddSingleton<WebSocketService>();
+}
+static async Task HandleWebSocketConnection(WebSocket webSocket, ConcurrentBag<WebSocket> clients)
+{
+    var buffer = new byte[1024 * 4];
 
-        // WebSocket endpoint
-        app.Use(async (context, next) =>
+    try
+    {
+        while (webSocket.State == WebSocketState.Open)
         {
-            if (context.Request.Path == "/ws")
+            var receiveResult = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
+
+            if (receiveResult.MessageType == WebSocketMessageType.Close)
             {
-                var webSocketService = context.RequestServices.GetRequiredService<WebSocketService>();
-                await webSocketService.HandleWebSocketConnection(context);
+                break;
             }
-            else
+
+            string message = Encoding.UTF8.GetString(buffer, 0, receiveResult.Count);
+            Console.WriteLine($"Received: {message}");
+
+            foreach (var client in clients)
             {
-                await next();
+                if (client != webSocket && client.State == WebSocketState.Open)
+                {
+                    await client.SendAsync(
+                        new ArraySegment<byte>(Encoding.UTF8.GetBytes(message)), 
+                        WebSocketMessageType.Text,
+                        true,
+                        CancellationToken.None);
+                }
             }
-        });
+        }
     }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Error: {ex.Message}");
+    }
+    finally
+    {
+        clients.TryTake(out _);
+        await webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "Connection closed", CancellationToken.None);
+    }
+}
+
+
+static void Configure(IApplicationBuilder app)
+{
+    // Enable WebSockets
+    app.UseWebSockets(new WebSocketOptions
+    {
+        KeepAliveInterval = TimeSpan.FromSeconds(120)
+    });
+
+    // WebSocket endpoint
+    app.Use(async (context, next) =>
+    {
+        if (context.Request.Path == "/ws")
+        {
+            var webSocketService = context.RequestServices.GetRequiredService<WebSocketService>();
+            await webSocketService.HandleWebSocketConnection(context);
+        }
+        else
+        {
+            await next();
+        }
+    });
+}
 // Improved CORS configuration
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowSpecificOrigin", policy =>
     {
         policy.WithOrigins(
-            "https://sethstar.duckdns.org", 
+            "https://sethstar.duckdns.org",
             "https://sethapi.duckdns.org"
         )
         .SetIsOriginAllowedToAllowWildcardSubdomains()
@@ -493,7 +536,7 @@ app.UseCors("AllowSpecificOrigin");
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
-
+var connectedClients = new ConcurrentBag<WebSocket>();
 // WebSocket endpoint
 app.Map("/wss", async (HttpContext context, WebSocketManager webSocketManager) =>
 {
@@ -518,6 +561,31 @@ app.Map("/wss", async (HttpContext context, WebSocketManager webSocketManager) =
     return Task.CompletedTask;
 });
 
+app.Use(async (context, next) =>
+{
+    if (context.Request.Path == "/ws")
+    {
+        if (context.WebSockets.IsWebSocketRequest)
+        {
+            using var webSocket = await context.WebSockets.AcceptWebSocketAsync();
+            Console.WriteLine("WebSocket connected");
+
+            connectedClients.Add(webSocket);
+            await HandleWebSocketConnection(webSocket, connectedClients);
+
+            Console.WriteLine("WebSocket disconnected");
+        }
+        else
+        {
+            context.Response.StatusCode = StatusCodes.Status400BadRequest;
+        }
+    }
+    else
+    {
+        await next();
+    }
+});
+
 // CORS Preflight handling middleware
 app.Use(async (context, next) =>
 {
@@ -525,10 +593,10 @@ app.Use(async (context, next) =>
     {
         Console.WriteLine("Handling CORS Preflight Request");
 
-        context.Response.Headers.Add("Access-Control-Allow-Origin", context.Request.Headers["Origin"]);
-        context.Response.Headers.Add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-        context.Response.Headers.Add("Access-Control-Allow-Headers", "Content-Type, Authorization");
-        context.Response.Headers.Add("Access-Control-Allow-Credentials", "true");
+        context.Response.Headers.Append("Access-Control-Allow-Origin", context.Request.Headers["Origin"]);
+        context.Response.Headers.Append("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+        context.Response.Headers.Append("Access-Control-Allow-Headers", "Content-Type, Authorization");
+        context.Response.Headers.Append("Access-Control-Allow-Credentials", "true");
 
         context.Response.StatusCode = StatusCodes.Status204NoContent;
         await context.Response.CompleteAsync();
@@ -684,7 +752,7 @@ app.Run();
 
 void EnsureDirectoriesAndDefaultImage()
 {
-    try 
+    try
     {
         Directory.CreateDirectory(IMAGE_DIRECTORY);
 
@@ -702,12 +770,12 @@ void EnsureDirectoriesAndDefaultImage()
 
 void LoadOrSeedInventory()
 {
-    try 
+    try
     {
         if (File.Exists(FILE_PATH))
         {
             var json = File.ReadAllText(FILE_PATH);
-            inventoryItems = JsonSerializer.Deserialize<Dictionary<string, InventoryItem>>(json) 
+            inventoryItems = JsonSerializer.Deserialize<Dictionary<string, InventoryItem>>(json)
                 ?? new Dictionary<string, InventoryItem>();
         }
 
@@ -727,12 +795,12 @@ void SeedInventory()
 {
     var seedItems = new List<InventoryItem>
     {
-        new InventoryItem { 
-            Id = Guid.NewGuid().ToString(), 
-            Title = "Sticker 1", 
-            Author = "1", 
-            Description = "It is a Sticker", 
-            ImagePath = DEFAULT_IMAGE 
+        new InventoryItem {
+            Id = Guid.NewGuid().ToString(),
+            Title = "Sticker 1",
+            Author = "1",
+            Description = "It is a Sticker",
+            ImagePath = DEFAULT_IMAGE
         },
         // ... other seed items
     };
@@ -775,7 +843,7 @@ public class WebSocketManager
             while (webSocket.State == WebSocketState.Open)
             {
                 var receiveResult = await webSocket.ReceiveAsync(
-                    new ArraySegment<byte>(buffer), 
+                    new ArraySegment<byte>(buffer),
                     CancellationToken.None
                 );
 
@@ -820,8 +888,8 @@ public class WebSocketManager
         if (webSocket.State != WebSocketState.Closed)
         {
             await webSocket.CloseAsync(
-                WebSocketCloseStatus.NormalClosure, 
-                "Connection closed", 
+                WebSocketCloseStatus.NormalClosure,
+                "Connection closed",
                 CancellationToken.None
             );
         }
@@ -868,15 +936,15 @@ public class WebSocketService
         while (webSocket.State == WebSocketState.Open)
         {
             WebSocketReceiveResult result = await webSocket.ReceiveAsync(
-                new ArraySegment<byte>(buffer), 
+                new ArraySegment<byte>(buffer),
                 CancellationToken.None
             );
 
             if (result.MessageType == WebSocketMessageType.Close)
             {
                 await webSocket.CloseAsync(
-                    WebSocketCloseStatus.NormalClosure, 
-                    "Closing", 
+                    WebSocketCloseStatus.NormalClosure,
+                    "Closing",
                     CancellationToken.None
                 );
                 break;
@@ -920,8 +988,8 @@ public class WebSocketService
         if (webSocket.State != WebSocketState.Closed)
         {
             await webSocket.CloseAsync(
-                WebSocketCloseStatus.NormalClosure, 
-                "Connection closed", 
+                WebSocketCloseStatus.NormalClosure,
+                "Connection closed",
                 CancellationToken.None
             );
         }
@@ -929,7 +997,7 @@ public class WebSocketService
 
     public async Task SendMessageToClient(string clientId, string message)
     {
-        if (_clients.TryGetValue(clientId, out WebSocket webSocket) && 
+        if (_clients.TryGetValue(clientId, out WebSocket webSocket) &&
             webSocket.State == WebSocketState.Open)
         {
             await webSocket.SendAsync(
@@ -941,6 +1009,9 @@ public class WebSocketService
         }
     }
 }
+
+
+
 
 // Existing model classes remain the same
 public class InventoryItem
