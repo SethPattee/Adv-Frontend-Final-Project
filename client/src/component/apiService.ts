@@ -12,9 +12,6 @@ if (!API_BASE_URL) {
 
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
-  httpsAgent: new (require('https').Agent)({
-    rejectUnauthorized: false, // Ignore SSL errors
-}),
 });
 
 // Logging for debugging
