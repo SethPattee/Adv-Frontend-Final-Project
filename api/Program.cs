@@ -44,17 +44,29 @@ builder.Services.AddAuthorization();
 
 var app = builder.Build();
 // app.UseCors("AllowAllOrigins");
-app.UseCors(builder => builder
-    .SetIsOriginAllowed(_ => true) // Allow any origin
-    .AllowAnyMethod()
-    .AllowAnyHeader()
-    .AllowCredentials()
-);
+
 
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseWebSockets();
+app.UseWebSockets();
+
+app.Map("/wss", (context) =>
+{
+    if (context.Request.Headers["Origin"] == "https://sethstar.duckdns.org")
+    {
+        // Allow WebSocket connection
+        context.Response.StatusCode = StatusCodes.Status101SwitchingProtocols;
+        return HandleWebSocketConnection(context);
+    }
+    else
+    {
+        context.Response.StatusCode = StatusCodes.Status400BadRequest;
+        return Task.CompletedTask;
+    }
+});
+
 
 var connectedClients = new ConcurrentBag<WebSocket>();
 
@@ -62,6 +74,23 @@ app.MapGet("/", () => "WebSocket Server Running!");
 
 app.Use(async (context, next) =>
 {
+      if (context.Request.Method == "OPTIONS")
+    {
+        Console.WriteLine("Handling CORS Preflight Request");
+        context.Response.Headers.Add("Access-Control-Allow-Origin", context.Request.Headers["Origin"]);
+        context.Response.Headers.Add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+        context.Response.Headers.Add("Access-Control-Allow-Headers", "Content-Type, Authorization");
+        context.Response.Headers.Add("Access-Control-Allow-Credentials", "true");
+        context.Response.StatusCode = 204;
+        await context.Response.CompleteAsync();
+        return;
+    }
+
+    // Log request details
+    Console.WriteLine($"Incoming Request: {context.Request.Method} {context.Request.Path}");
+    Console.WriteLine($"Origin: {context.Request.Headers["Origin"]}");
+    Console.WriteLine($"Host: {context.Request.Host}");
+
     if (context.Request.Path == "/wss")
     {
         if (context.WebSockets.IsWebSocketRequest)
@@ -83,21 +112,6 @@ app.Use(async (context, next) =>
     {
         await next();
     }
-   Console.WriteLine($"Incoming Request: {context.Request.Method} {context.Request.Path}");
-    Console.WriteLine($"Origin: {context.Request.Headers["Origin"]}");
-    Console.WriteLine($"Host: {context.Request.Host}");
-
-    if (context.Request.Method == "OPTIONS")
-    {
-        Console.WriteLine("Handling CORS Preflight Request");
-        context.Response.Headers.Add("Access-Control-Allow-Origin", context.Request.Headers["Origin"]);
-        context.Response.Headers.Add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-        context.Response.Headers.Add("Access-Control-Allow-Headers", "Content-Type, Authorization");
-        context.Response.Headers.Add("Access-Control-Allow-Credentials", "true");
-        context.Response.StatusCode = 204;
-        await context.Response.CompleteAsync();
-        return;
-    }
 
     try 
     {
@@ -115,7 +129,12 @@ app.Use(async (context, next) =>
     // }
 });
 
-
+app.UseCors(builder => builder
+    .SetIsOriginAllowed(_ => true) // Allow any origin
+    .AllowAnyMethod()
+    .AllowAnyHeader()
+    .AllowCredentials()
+);
 
 var inventoryItems = new Dictionary<string, InventoryItem>();
 const string FILE_PATH = "data/inventory.json";
@@ -338,7 +357,6 @@ app.Run();
 
 
 
-
 static async Task HandleWebSocketConnection(WebSocket webSocket, ConcurrentBag<WebSocket> clients)
 {
     var buffer = new byte[1024 * 4];
@@ -377,11 +395,11 @@ static async Task HandleWebSocketConnection(WebSocket webSocket, ConcurrentBag<W
     finally
     {
         clients.TryTake(out var _);
-    if (webSocket.State != WebSocketState.Open)
-    {
-        clients.TryTake(out _);
-    }
-    await webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "Connection closed", CancellationToken.None);
+
+        if (webSocket.State != WebSocketState.Open)
+        {
+            await webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "Connection closed", CancellationToken.None);
+        }
     }
 }
 
