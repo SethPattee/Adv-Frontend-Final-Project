@@ -44,7 +44,13 @@ builder.Services.AddAuthorization();
 
 var app = builder.Build();
 // app.UseCors("AllowAllOrigins");
-app.UseCors("AllowSpecificOrigin");
+app.UseCors(builder => builder
+    .SetIsOriginAllowed(_ => true) // Allow any origin
+    .AllowAnyMethod()
+    .AllowAnyHeader()
+    .AllowCredentials()
+);
+
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
@@ -77,9 +83,14 @@ app.Use(async (context, next) =>
     {
         await next();
     }
-   if (context.Request.Method == "OPTIONS")
+   Console.WriteLine($"Incoming Request: {context.Request.Method} {context.Request.Path}");
+    Console.WriteLine($"Origin: {context.Request.Headers["Origin"]}");
+    Console.WriteLine($"Host: {context.Request.Host}");
+
+    if (context.Request.Method == "OPTIONS")
     {
-        context.Response.Headers.Add("Access-Control-Allow-Origin", "https://sethapi.duckdns.org");
+        Console.WriteLine("Handling CORS Preflight Request");
+        context.Response.Headers.Add("Access-Control-Allow-Origin", context.Request.Headers["Origin"]);
         context.Response.Headers.Add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
         context.Response.Headers.Add("Access-Control-Allow-Headers", "Content-Type, Authorization");
         context.Response.Headers.Add("Access-Control-Allow-Credentials", "true");
@@ -88,6 +99,16 @@ app.Use(async (context, next) =>
         return;
     }
 
+    try 
+    {
+        await next();
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Middleware Error: {ex.Message}");
+        Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+        throw;
+    }
     else
     {
         await next();

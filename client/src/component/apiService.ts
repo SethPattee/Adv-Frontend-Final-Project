@@ -20,6 +20,28 @@ const apiClient = axios.create({
   }
 });
 
+const fetchInventory = async () => {
+  try {
+    console.log('Attempting to fetch from:', 'https://sethapi.duckdns.org/inventory');
+    const response = await axios.get('https://sethapi.duckdns.org/inventory', {
+      withCredentials: false, // Try without credentials first
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    });
+    console.log('Response received:', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Full Error Object:', error);
+    console.error('Error Details:', {
+      message: error.message,
+      code: error.code,
+      response: error.response,
+      config: error.config
+    });
+    throw error;
+  }
+}
 // Logging for debugging
 apiClient.interceptors.request.use((config) => {
   console.log('Request:', config);

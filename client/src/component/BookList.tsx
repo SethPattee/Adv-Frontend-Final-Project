@@ -7,7 +7,7 @@ import ErrorThrower from './ErrorThrower';
 import Spinner from './Spinner';
 import { useInventoryQuery } from './hooks';
 
-const API_BASE_URL = 'http://localhost:5030';
+const API_BASE_URL = 'https://sethapi.duckdns.org';
 
 if (!API_BASE_URL) console.error('VITE_API_URL is not defined');
 else console.log('VITE_API_URL is', API_BASE_URL);
