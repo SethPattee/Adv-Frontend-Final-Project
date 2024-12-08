@@ -51,24 +51,41 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.UseWebSockets();
 app.UseWebSockets();
+var connectedClients = new ConcurrentBag<WebSocket>(); // Declare the variable here
 
-app.Map("/wss", (context) =>
+app.Map("/wss", async (HttpContext context) =>
 {
     if (context.Request.Headers["Origin"] == "https://sethstar.duckdns.org")
     {
         // Allow WebSocket connection
-        context.Response.StatusCode = StatusCodes.Status101SwitchingProtocols;
-        return HandleWebSocketConnection(context);
+        if (context.WebSockets.IsWebSocketRequest)
+        {
+            using var webSocket = await context.WebSockets.AcceptWebSocketAsync();
+            Console.WriteLine("WebSocket connected");
+
+            // Add WebSocket to the list of connected clients
+            connectedClients.Add(webSocket);
+
+            // Handle WebSocket connection
+            await HandleWebSocketConnection(webSocket, connectedClients);
+        }
+        else
+        {
+            context.Response.StatusCode = StatusCodes.Status400BadRequest;
+        }
     }
     else
     {
         context.Response.StatusCode = StatusCodes.Status400BadRequest;
-        return Task.CompletedTask;
     }
+
+    // Since this method is async and doesn't return anything else, just return Task.CompletedTask
+    return Task.CompletedTask;
 });
 
 
-var connectedClients = new ConcurrentBag<WebSocket>();
+
+// var connectedClients = new ConcurrentBag<WebSocket>();
 
 app.MapGet("/", () => "WebSocket Server Running!");
 
