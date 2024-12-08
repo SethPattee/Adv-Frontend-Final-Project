@@ -21,9 +21,10 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowSpecificOrigin", policy =>
     {
-        policy.WithOrigins("http://localhost:3000", "https://sethapi.duckdns.org", "https://sethstar.duckdns.org")
+        policy.WithOrigins("https://sethstar.duckdns.org", "https://sethapi.duckdns.org")
               .AllowAnyMethod()
-              .AllowAnyHeader();
+              .AllowAnyHeader()
+              .AllowCredentials(); // Allow credentials if needed
     });
 });
 
@@ -50,23 +51,20 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseWebSockets();
-app.UseWebSockets();
 var connectedClients = new ConcurrentBag<WebSocket>(); // Declare the variable here
+
 
 app.Map("/wss", async (HttpContext context) =>
 {
     if (context.Request.Headers["Origin"] == "https://sethstar.duckdns.org")
     {
-        // Allow WebSocket connection
         if (context.WebSockets.IsWebSocketRequest)
         {
             using var webSocket = await context.WebSockets.AcceptWebSocketAsync();
             Console.WriteLine("WebSocket connected");
 
-            // Add WebSocket to the list of connected clients
             connectedClients.Add(webSocket);
 
-            // Handle WebSocket connection
             await HandleWebSocketConnection(webSocket, connectedClients);
         }
         else
@@ -79,13 +77,12 @@ app.Map("/wss", async (HttpContext context) =>
         context.Response.StatusCode = StatusCodes.Status400BadRequest;
     }
 
-    // Since this method is async and doesn't return anything else, just return Task.CompletedTask
     return Task.CompletedTask;
 });
 
 
+app.MapFallbackToFile("index.html");
 
-// var connectedClients = new ConcurrentBag<WebSocket>();
 
 
 app.Use(async (context, next) =>
@@ -145,12 +142,7 @@ app.Use(async (context, next) =>
     // }
 });
 
-app.UseCors(builder => builder
-    .SetIsOriginAllowed(_ => true) // Allow any origin
-    .AllowAnyMethod()
-    .AllowAnyHeader()
-    .AllowCredentials()
-);
+app.UseCors("AllowSpecificOrigin");
 
 app.Map("/wss", async (HttpContext context) =>
 {
