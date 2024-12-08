@@ -11,7 +11,7 @@ if (!API_BASE_URL) {
 }
 
 const apiClient = axios.create({
-  baseURL: API_BASE_URL,
+  baseURL: API_BASE_URL
 });
 
 // Logging for debugging
