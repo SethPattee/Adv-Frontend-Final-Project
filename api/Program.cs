@@ -21,12 +21,13 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowSpecificOrigin", policy =>
     {
-        policy.WithOrigins("https://sethstar.duckdns.org", "https://sethapi.duckdns.org")
+        policy.WithOrigins("https://sethstar.duckdns.org") // Add the origin of your frontend
               .AllowAnyMethod()
-              .AllowAnyHeader()
-              .AllowCredentials(); // Allow credentials if needed
+              .AllowAnyHeader() // This allows all headers, including Authorization
+              .AllowCredentials(); // If needed for cookies or authentication tokens
     });
 });
+
 
 builder.Services.AddAuthentication("Bearer")
     .AddJwtBearer("Bearer", options =>
