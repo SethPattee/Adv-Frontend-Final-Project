@@ -19,7 +19,7 @@ using System.Collections.Concurrent;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAllOrigins", policy =>
+    options.AddPolicy("AllowSpecificOrigin", policy =>
     {
         policy.WithOrigins("http://localhost:3000", "https://sethapi.duckdns.org", "https://sethstar.duckdns.org")
               .AllowAnyMethod()
