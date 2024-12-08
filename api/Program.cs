@@ -19,8 +19,14 @@ using System.Collections.Concurrent;
 
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddCors();
-
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowSpecificOrigin", builder =>
+        builder.WithOrigins("https://sethstar.duckdns.org")
+               .AllowAnyHeader()
+               .AllowAnyMethod()
+               .AllowCredentials());
+});
 builder.Services.AddAuthentication("Bearer")
     .AddJwtBearer("Bearer", options =>
     {
@@ -37,10 +43,11 @@ builder.Services.AddAuthentication("Bearer")
 builder.Services.AddAuthorization();
 
 var app = builder.Build();
-app.UseCors(options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+// app.UseCors(options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+app.UseCors("AllowSpecificOrigin");
 
-app.UseCors("AllowAllOrigins");
-app.UseCors("AccessControlAllowOrigin");
+// app.UseCors("AllowAllOrigins");
+// app.UseCors("AccessControlAllowOrigin");
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
@@ -52,7 +59,7 @@ app.MapGet("/", () => "WebSocket Server Running!");
 
 app.Use(async (context, next) =>
 {
-    if (context.Request.Path == "/ws")
+    if (context.Request.Path == "/wss")
     {
         if (context.WebSockets.IsWebSocketRequest)
         {
@@ -336,8 +343,12 @@ static async Task HandleWebSocketConnection(WebSocket webSocket, ConcurrentBag<W
     }
     finally
     {
+        clients.TryTake(out var _);
+    if (webSocket.State != WebSocketState.Open)
+    {
         clients.TryTake(out _);
-        await webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "Connection closed", CancellationToken.None);
+    }
+    await webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "Connection closed", CancellationToken.None);
     }
 }
 

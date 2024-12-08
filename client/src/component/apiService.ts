@@ -2,7 +2,7 @@ import axios from 'axios';
 import { InventoryItem } from './InventoryContext';
 
 // const API_BASE_URL = 'http://localhost:5009/';
-const API_BASE_URL = 'http://sethapi.duckdns.org';
+const API_BASE_URL = 'https://sethapi.duckdns.org';
 
 if (!API_BASE_URL) {
   console.error('VITE_API_URL is not defined and no fallback was provided.');
