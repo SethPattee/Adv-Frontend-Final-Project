@@ -1,5 +1,3 @@
-
-
 using System.Security.Claims;
 using System.Text.Json;
 using Microsoft.AspNetCore.Builder;
@@ -21,12 +19,14 @@ using System.Collections.Concurrent;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowSpecificOrigin", builder =>
-        builder.WithOrigins("https://sethstar.duckdns.org")
-               .AllowAnyHeader()
-               .AllowAnyMethod()
-               .AllowCredentials());
+    options.AddPolicy("AllowAllOrigins", policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
 });
+
 builder.Services.AddAuthentication("Bearer")
     .AddJwtBearer("Bearer", options =>
     {
@@ -43,11 +43,7 @@ builder.Services.AddAuthentication("Bearer")
 builder.Services.AddAuthorization();
 
 var app = builder.Build();
-// app.UseCors(options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
-app.UseCors("AllowSpecificOrigin");
-
-// app.UseCors("AllowAllOrigins");
-// app.UseCors("AccessControlAllowOrigin");
+app.UseCors("AllowAllOrigins");
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
