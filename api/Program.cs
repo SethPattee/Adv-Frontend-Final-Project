@@ -21,7 +21,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAllOrigins", policy =>
     {
-        policy.AllowAnyOrigin()
+        policy.WithOrigins("http://localhost:3000", "https://sethapi.duckdns.org", "https://sethstar.duckdns.org")
               .AllowAnyMethod()
               .AllowAnyHeader();
     });
@@ -43,7 +43,8 @@ builder.Services.AddAuthentication("Bearer")
 builder.Services.AddAuthorization();
 
 var app = builder.Build();
-app.UseCors("AllowAllOrigins");
+// app.UseCors("AllowAllOrigins");
+app.UseCors("AllowSpecificOrigin");
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
