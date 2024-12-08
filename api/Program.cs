@@ -77,14 +77,17 @@ app.Use(async (context, next) =>
     {
         await next();
     }
-    if (context.Request.Method == HttpMethods.Options)
+   if (context.Request.Method == "OPTIONS")
     {
-        context.Response.Headers.Add("Access-Control-Allow-Origin", "*");
+        context.Response.Headers.Add("Access-Control-Allow-Origin", "https://sethapi.duckdns.org");
         context.Response.Headers.Add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
         context.Response.Headers.Add("Access-Control-Allow-Headers", "Content-Type, Authorization");
-        context.Response.StatusCode = 200;
+        context.Response.Headers.Add("Access-Control-Allow-Credentials", "true");
+        context.Response.StatusCode = 204;
         await context.Response.CompleteAsync();
+        return;
     }
+
     else
     {
         await next();
