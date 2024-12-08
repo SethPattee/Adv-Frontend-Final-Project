@@ -87,7 +87,6 @@ app.Map("/wss", async (HttpContext context) =>
 
 // var connectedClients = new ConcurrentBag<WebSocket>();
 
-app.MapGet("/", () => "WebSocket Server Running!");
 
 app.Use(async (context, next) =>
 {
@@ -152,6 +151,33 @@ app.UseCors(builder => builder
     .AllowAnyHeader()
     .AllowCredentials()
 );
+
+app.Map("/wss", async (HttpContext context) =>
+{
+    if (context.Request.Headers["Origin"] == "https://sethstar.duckdns.org")
+    {
+        // Handle WebSocket request
+        if (context.WebSockets.IsWebSocketRequest)
+        {
+            using var webSocket = await context.WebSockets.AcceptWebSocketAsync();
+            Console.WriteLine("WebSocket connected");
+
+            connectedClients.Add(webSocket);
+
+            await HandleWebSocketConnection(webSocket, connectedClients);
+        }
+        else
+        {
+            context.Response.StatusCode = StatusCodes.Status400BadRequest;
+        }
+    }
+    else
+    {
+        context.Response.StatusCode = StatusCodes.Status400BadRequest;
+    }
+
+    return Task.CompletedTask; // Return Task as the lambda is async
+});
 
 var inventoryItems = new Dictionary<string, InventoryItem>();
 const string FILE_PATH = "data/inventory.json";
