@@ -533,12 +533,17 @@ var app = builder.Build();
 
 // Configure middleware
 app.UseCors("AllowSpecificOrigin");
+app.UseWebSockets(new WebSocketOptions
+{
+    KeepAliveInterval = TimeSpan.FromSeconds(120)
+});
+
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 var connectedClients = new ConcurrentBag<WebSocket>();
 // WebSocket endpoint
-app.Map("/ws", async (HttpContext context, WebSocketManager webSocketManager) =>
+app.Map("/wss", async (HttpContext context, WebSocketManager webSocketManager) =>
 {
     if (context.Request.Headers["Origin"] == "https://sethstar.duckdns.org")
     {
@@ -560,20 +565,27 @@ app.Map("/ws", async (HttpContext context, WebSocketManager webSocketManager) =>
 
     return Task.CompletedTask;
 });
-
 app.Use(async (context, next) =>
 {
     if (context.Request.Path == "/wss")
     {
         if (context.WebSockets.IsWebSocketRequest)
         {
-            using var webSocket = await context.WebSockets.AcceptWebSocketAsync();
-            Console.WriteLine("WebSocket connected");
+            if (context.Request.Headers["Origin"] == "https://sethstar.duckdns.org")  // Add origin check
+            {
+                using var webSocket = await context.WebSockets.AcceptWebSocketAsync();
+                Console.WriteLine("WebSocket connected");
 
-            connectedClients.Add(webSocket);
-            await HandleWebSocketConnection(webSocket, connectedClients);
+                connectedClients.Add(webSocket);
+                await HandleWebSocketConnection(webSocket, connectedClients);
 
-            Console.WriteLine("WebSocket disconnected");
+                Console.WriteLine("WebSocket disconnected");
+            }
+            else
+            {
+                context.Response.StatusCode = StatusCodes.Status403Forbidden;
+                await context.Response.WriteAsync("Origin not allowed");
+            }
         }
         else
         {
