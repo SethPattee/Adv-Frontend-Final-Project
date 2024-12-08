@@ -538,7 +538,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 var connectedClients = new ConcurrentBag<WebSocket>();
 // WebSocket endpoint
-app.Map("/wss", async (HttpContext context, WebSocketManager webSocketManager) =>
+app.Map("/ws", async (HttpContext context, WebSocketManager webSocketManager) =>
 {
     if (context.Request.Headers["Origin"] == "https://sethstar.duckdns.org")
     {
@@ -563,7 +563,7 @@ app.Map("/wss", async (HttpContext context, WebSocketManager webSocketManager) =
 
 app.Use(async (context, next) =>
 {
-    if (context.Request.Path == "/ws")
+    if (context.Request.Path == "/wss")
     {
         if (context.WebSockets.IsWebSocketRequest)
         {

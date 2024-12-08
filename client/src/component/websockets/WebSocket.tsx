@@ -4,7 +4,7 @@ function Websocket() {
   const [socket, setSocket] = useState<WebSocket | undefined>(undefined);
   const [inputMessage, setInputMessage] = useState<string>('');
   const [messages, setMessages] = useState<string[]>([]);
-  const websocketUrls = ['ws://localhost:5009/ws', 'ws://sethapi.duckdns.org/ws'];
+  const websocketUrls = ['ws://localhost:5009/ws', 'wss://sethapi.duckdns.org/wss'];
 
   useEffect(() => {
     let socketInstance: WebSocket | undefined;
