@@ -109,10 +109,10 @@ app.Use(async (context, next) =>
         Console.WriteLine($"Stack Trace: {ex.StackTrace}");
         throw;
     }
-    else
-    {
-        await next();
-    }
+    // else
+    // {
+    //     await next();
+    // }
 });
 
 
