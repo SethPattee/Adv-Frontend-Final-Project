@@ -49,6 +49,8 @@ app.UseCors("AllowSpecificOrigin"); // Apply CORS middleware here
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
+app.MapControllers();
+
 var connectedClients = new ConcurrentBag<WebSocket>(); // Declare the variable here
 
 // WebSocket setup and other middleware configurations
@@ -78,11 +80,12 @@ app.Map("/wss", async (HttpContext context) =>
 });
 
 app.Use(async (context, next) =>
-{
-    // Handle CORS Preflight Request (OPTIONS)
+{// Handle CORS Preflight Request (OPTIONS)
     if (context.Request.Method == "OPTIONS")
     {
         Console.WriteLine("Handling CORS Preflight Request");
+
+        // Set CORS headers before returning response
         context.Response.Headers.Add("Access-Control-Allow-Origin", context.Request.Headers["Origin"]);
         context.Response.Headers.Add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
         context.Response.Headers.Add("Access-Control-Allow-Headers", "Content-Type, Authorization");
@@ -93,45 +96,11 @@ app.Use(async (context, next) =>
         return;
     }
 
-    // Log request details
+    // Make sure to set headers before writing the response body
     Console.WriteLine($"Incoming Request: {context.Request.Method} {context.Request.Path}");
 
-    // Continue to next middleware
+    // Continue processing
     await next();
-
-    
-    if (context.Request.Path == "/wss")
-    {
-        if (context.WebSockets.IsWebSocketRequest)
-        {
-            using var webSocket = await context.WebSockets.AcceptWebSocketAsync();
-            Console.WriteLine("WebSocket connected");
-
-            connectedClients.Add(webSocket);
-            await HandleWebSocketConnection(webSocket, connectedClients);
-
-            Console.WriteLine("WebSocket disconnected");
-        }
-        else
-        {
-            context.Response.StatusCode = StatusCodes.Status400BadRequest;
-        }
-    }
-    else
-    {
-        await next();
-    }
-
-    try 
-    {
-        await next();
-    }
-    catch (Exception ex)
-    {
-        Console.WriteLine($"Middleware Error: {ex.Message}");
-        Console.WriteLine($"Stack Trace: {ex.StackTrace}");
-        throw;
-    }
 });
 
 
