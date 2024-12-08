@@ -21,13 +21,12 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowSpecificOrigin", policy =>
     {
-        policy.WithOrigins("https://sethstar.duckdns.org") // Add the origin of your frontend
+        policy.WithOrigins("https://sethstar.duckdns.org", "https://sethapi.duckdns.org")
               .AllowAnyMethod()
-              .AllowAnyHeader() // This allows all headers, including Authorization
-              .AllowCredentials(); // If needed for cookies or authentication tokens
+              .AllowAnyHeader()
+              .AllowCredentials(); // Allow credentials if needed
     });
 });
-
 
 builder.Services.AddAuthentication("Bearer")
     .AddJwtBearer("Bearer", options =>
@@ -45,27 +44,24 @@ builder.Services.AddAuthentication("Bearer")
 builder.Services.AddAuthorization();
 
 var app = builder.Build();
-// app.UseCors("AllowAllOrigins");
 
-
+app.UseCors("AllowSpecificOrigin"); // Apply CORS middleware here
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseWebSockets();
 var connectedClients = new ConcurrentBag<WebSocket>(); // Declare the variable here
 
-
+// WebSocket setup and other middleware configurations
 app.Map("/wss", async (HttpContext context) =>
 {
     if (context.Request.Headers["Origin"] == "https://sethstar.duckdns.org")
     {
+        // Handle WebSocket request
         if (context.WebSockets.IsWebSocketRequest)
         {
             using var webSocket = await context.WebSockets.AcceptWebSocketAsync();
             Console.WriteLine("WebSocket connected");
-
             connectedClients.Add(webSocket);
-
             await HandleWebSocketConnection(webSocket, connectedClients);
         }
         else
@@ -78,33 +74,32 @@ app.Map("/wss", async (HttpContext context) =>
         context.Response.StatusCode = StatusCodes.Status400BadRequest;
     }
 
-    return Task.CompletedTask;
+    return Task.CompletedTask; // Return Task as the lambda is async
 });
-
-
-app.MapFallbackToFile("index.html");
-
-
 
 app.Use(async (context, next) =>
 {
-      if (context.Request.Method == "OPTIONS")
+    // Handle CORS Preflight Request (OPTIONS)
+    if (context.Request.Method == "OPTIONS")
     {
         Console.WriteLine("Handling CORS Preflight Request");
         context.Response.Headers.Add("Access-Control-Allow-Origin", context.Request.Headers["Origin"]);
         context.Response.Headers.Add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
         context.Response.Headers.Add("Access-Control-Allow-Headers", "Content-Type, Authorization");
         context.Response.Headers.Add("Access-Control-Allow-Credentials", "true");
-        context.Response.StatusCode = 204;
+
+        context.Response.StatusCode = StatusCodes.Status204NoContent;
         await context.Response.CompleteAsync();
         return;
     }
 
     // Log request details
     Console.WriteLine($"Incoming Request: {context.Request.Method} {context.Request.Path}");
-    Console.WriteLine($"Origin: {context.Request.Headers["Origin"]}");
-    Console.WriteLine($"Host: {context.Request.Host}");
 
+    // Continue to next middleware
+    await next();
+
+    
     if (context.Request.Path == "/wss")
     {
         if (context.WebSockets.IsWebSocketRequest)
@@ -137,40 +132,12 @@ app.Use(async (context, next) =>
         Console.WriteLine($"Stack Trace: {ex.StackTrace}");
         throw;
     }
-    // else
-    // {
-    //     await next();
-    // }
 });
 
-app.UseCors("AllowSpecificOrigin");
 
-app.Map("/wss", async (HttpContext context) =>
-{
-    if (context.Request.Headers["Origin"] == "https://sethstar.duckdns.org")
-    {
-        // Handle WebSocket request
-        if (context.WebSockets.IsWebSocketRequest)
-        {
-            using var webSocket = await context.WebSockets.AcceptWebSocketAsync();
-            Console.WriteLine("WebSocket connected");
 
-            connectedClients.Add(webSocket);
 
-            await HandleWebSocketConnection(webSocket, connectedClients);
-        }
-        else
-        {
-            context.Response.StatusCode = StatusCodes.Status400BadRequest;
-        }
-    }
-    else
-    {
-        context.Response.StatusCode = StatusCodes.Status400BadRequest;
-    }
 
-    return Task.CompletedTask; // Return Task as the lambda is async
-});
 
 var inventoryItems = new Dictionary<string, InventoryItem>();
 const string FILE_PATH = "data/inventory.json";
