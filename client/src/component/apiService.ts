@@ -13,13 +13,12 @@ if (!API_BASE_URL) {
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
   timeout: 10000, 
-  withCredentials: true,  // Allow cookies if needed, including CORS support
+  withCredentials: true, 
   headers: {
     'Content-Type': 'application/json'
   }
 });
 
-// Logging for debugging
 apiClient.interceptors.request.use((config) => {
   console.log('Request:', config);
   return config;
